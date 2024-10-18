@@ -1,0 +1,131 @@
+### Users API Requests
+
+
+###
+get http://localhost:4000/user-api/users/test
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3MjcxMDY0NjUsImV4cCI6MTcyNzExMDA2NX0.L73YBJ1Z2IPQ0y2h_JjGrlkflp-Iak-oD2A1PsrihEY
+
+### -> Create New User
+post http://localhost:4000/user-api/users
+Content-Type: application/json
+
+{
+    "name": "Tennis",
+    "username": "tennis",
+    "password": "12345678",
+    "email": "test@gmail.com"
+}
+
+###  -> Login
+post http://localhost:4000/user-api/users/login
+Content-Type: application/json
+
+{
+    "username": "tennis",
+    "password": "12345678"
+}
+
+###
+get http://localhost:4000/user-api/user-profile
+Content-Type: application/json
+
+{
+ "firstname": "John", 
+ "username": "john@example.com", 
+ "contactNumber": "1234567890", 
+ "registerDate": "2024-01-01", 
+ "expenseLimit": 500
+}
+
+###
+put http://localhost:4000/user-api/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3MjcxMDY0NjUsImV4cCI6MTcyNzExMDA2NX0.L73YBJ1Z2IPQ0y2h_JjGrlkflp-Iak-oD2A1PsrihEY
+
+{
+    "username": "test",
+    "name": "test new name",
+    "email": "tests@gmail.com"
+}
+###
+delete http://localhost:4000/user-api/users/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3MjcxMDY0NjUsImV4cCI6MTcyNzExMDA2NX0.L73YBJ1Z2IPQ0y2h_JjGrlkflp-Iak-oD2A1PsrihEY
+Content-Type: application/json
+
+{
+    "username": "test"
+}
+
+###-> Post Register Date
+POST http://localhost:4000/registration-api/register
+Content-Type: application/json
+
+{
+    "username": "newUser",
+    "password": "password123",
+    "email": "newuser@gmail.com",
+    "phone": "9876543210"
+}
+
+### Expenses Start
+### -> Add Travel Expense
+post http://localhost:4000/user-api/users/expenses
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3MjcxMDY0NjUsImV4cCI6MTcyNzExMDA2NX0.L73YBJ1Z2IPQ0y2h_JjGrlkflp-Iak-oD2A1PsrihEY
+Content-Type: application/json
+
+{
+  "username": "test",
+  "date": "23-09-2024",
+  "category": "travel",
+  "expenseDetails": {
+    "Destination": "vij",
+    "Arrival": "hyd",
+    "Distance": "150",
+    "Amount": 500
+  }
+}
+
+### -> Add food Expense
+post http://localhost:4000/user-api/users/expenses
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3MjcxMDY0NjUsImV4cCI6MTcyNzExMDA2NX0.L73YBJ1Z2IPQ0y2h_JjGrlkflp-Iak-oD2A1PsrihEY
+Content-Type: application/json
+
+{
+  "username": "test",
+  "date": "23-09-2024",
+  "category": "food",
+  "expenseDetails": {
+    "item": "Biryani",
+    "quantity": 2,
+    "Amount": 200
+  }
+}
+
+### -> Edit Expense
+put http://localhost:4000/user-api/users/expenses
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3MjcxMDY0NjUsImV4cCI6MTcyNzExMDA2NX0.L73YBJ1Z2IPQ0y2h_JjGrlkflp-Iak-oD2A1PsrihEY
+Content-Type: application/json
+
+{
+  "username": "test",
+  "date": "23-09-2024",
+  "category": "travel",
+  "expenseIndex": 0,
+  "expenseDetails": {
+    "Destination": "Bangalore",
+    "Arrival": "Chennai",
+    "Distance": "350 km",
+    "Amount": 1000
+  }
+}
+
+### -> Delete Expense
+delete http://localhost:4000/user-api/users/expenses
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3MjcxMDY0NjUsImV4cCI6MTcyNzExMDA2NX0.L73YBJ1Z2IPQ0y2h_JjGrlkflp-Iak-oD2A1PsrihEY
+Content-Type: application/json
+
+{
+  "username": "test",
+  "date": "23-09-2024",
+  "category": "food",
+  "expenseIndex": 0
+}

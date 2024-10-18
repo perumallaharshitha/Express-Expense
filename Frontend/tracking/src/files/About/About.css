@@ -1,0 +1,60 @@
+
+.about-page {
+    text-align: center;
+    padding: 40px;
+    height: 100vh;
+    background-color: #e3f2fd; /* Light blue background for freshness */
+    font-family: 'Roboto Slab', serif; /* Updated font family */
+}
+
+.main-heading {
+    font-size: 45px;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    margin-bottom: 20px;
+    color: palevioletred; /* Darker blue for the heading */
+}
+
+.about-description {
+    font-size: 18px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: black ;/* Slightly darker gray for better readability */
+    margin-bottom: 40px;
+}
+
+.card-section {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+
+.about-card {
+    background: #fff; /* Keeping white for contrast */
+    border-radius: 10px;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
+    transition: transform 0.3s ease;
+    text-align: center; /* Center text within cards */
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+}
+
+.about-card h3 {
+    font-size: 22px; /* Slightly larger font size */
+    color: #1976d2; /* Bright blue for card headings */
+    margin-top: 15px;
+}
+
+.about-card p {
+    color: #666; /* Medium gray for text */
+    font-size: 16px;
+    margin: 0; /* Remove default margin */
+}
+
+.card-icon {
+    font-size: 50px; /* Slightly larger icon size */
+    color: palevioletred; /* Changed icon color to a vibrant orange */
+    margin-bottom: 10px;
+}

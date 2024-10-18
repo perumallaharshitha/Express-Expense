@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Roboto+Slab:wght@100..900&display=swap');
+/* html, body {
+    margin: 0;
+    padding: 0;
+} */
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    width: 100%;  
+    background-image: url("../../assets/signin2.jpg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.login-box {
+    width: 350px;
+    padding: 40px;
+    background:transparent;
+    border-radius: 15px;
+    border: 1px solid white;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: "Roboto Slab", serif;
+}
+
+.login-box h2 {
+    margin-bottom: 20px;
+    font-family: "Roboto Slab", serif;
+    font-weight: bold;
+    color: white;
+}
+
+.textbox {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.textbox input {
+    width: 100%;
+    padding: 10px 10px 10px 30px;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    outline: none;
+    background: none;
+    font-size: 16px;
+}
+
+.textbox i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: black;
+}
+
+.bt {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(to right, #c3916b, #ede9eb);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.3s ease;
+}
+
+.bt:hover {
+    background: linear-gradient(to right, #c56868, #ec829b);
+}
+
+.login-options {
+    margin-top: 20px;
+}
+
+.login-options a {
+    display: block;
+    color: white;
+    font-size: 14px;
+    margin-top: 10px;
+    text-decoration: none;
+}
+
+.login-options a:hover {
+    text-decoration: underline;
+}
+.error-message {
+  color: red;
+  margin-top: 10px;
+}

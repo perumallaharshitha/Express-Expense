@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Roboto+Slab:wght@100..900&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+}
+.header {
+    display: flex;
+    height: 60px;
+    justify-content: space-between;
+    align-items: center;
+    background-color:#0096b7;
+    /* background-image: url('../../assets/bg.jpg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%; */
+    padding: 10px 20px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+.pic {
+    height: 55px;
+    width: 150px;
+    margin-left: 20px;
+}
+
+.links {
+    display: flex;
+    gap: 15px; 
+    
+}
+
+.nav-link {
+    color: violet;
+    text-decoration: none;
+    margin: 5px;
+    font-family: "Roboto Slab", serif;
+    /* transition: color 0.3s ease; */
+}
+
+.nav-link:hover {
+    color: white; 
+}

@@ -39,8 +39,11 @@ function Header() {
                         <NavLink to="/category" className="nav-link" onClick={toggleMenu}>Category</NavLink>
                         <NavLink to="/profile" className="nav-link" onClick={toggleMenu}>Profile</NavLink>
                         <NavLink to="/report" className="nav-link" onClick={toggleMenu}>Report</NavLink>
-                        <span className="welcome-msg">Hi, {currentUser.name}!</span>
                         <button className="nav-link logout-btn" onClick={logout}>Sign Out</button>
+
+                        <div className="user-info">
+                            <img src={currentUser.profileImage} alt="User" className="user-pic" />
+                        </div>
                     </>
                 )}
             </nav>

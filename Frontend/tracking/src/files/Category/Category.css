@@ -1,0 +1,87 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f9f9e5; /* Force background color */
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* For the first row */
+    max-width: 1200px; /* Adjusted width */
+    margin: 15px auto;
+    padding: 20px;
+    width: 100%;
+}
+
+.container .card {
+    flex: 1 1 calc(25% - 20px); /* 4 cards in the first row */
+    padding: 20px;
+    height: 220px;
+    border: none; /* Remove border for a cleaner look */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Light, soft colors for the first row cards */
+.container .card:nth-child(1) {
+    background-color: #e0f7fa; /* Light cyan */
+}
+
+.container .card:nth-child(2) {
+    background-color: #ffe0b2; /* Light amber */
+}
+
+.container .card:nth-child(3) {
+    background-color: #f1f8e9; /* Light green */
+}
+
+.container .card:nth-child(4) {
+    background-color: #fce4ec; /* Light pink */
+}
+
+.second-row {
+    display: flex;
+    justify-content: center; /* Center the second row */
+    width: 100%; /* Ensure it takes full width */
+    margin-top: 20px; /* Space between rows */
+}
+
+.second-row .card {
+    flex: 1 1 calc(33.33% - 20px); /* 3 cards in the second row */
+    max-width: 300px; /* Optional: Limit max width */
+}
+
+/* Light colors for the second row cards */
+.second-row .card:nth-child(1) {
+    background-color: #f1f8e9; /* Light peach */
+}
+
+.second-row .card:nth-child(2) {
+    background-color: #fce4ec; /* Soft light green */
+}
+
+.second-row .card:nth-child(3) {
+    background-color: #e3f2fd; /* Light blue */
+}
+
+p {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333; /* Change text color for better contrast */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}

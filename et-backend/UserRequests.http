@@ -1,0 +1,45 @@
+### Register a User (POST)
+POST http://localhost:5000/user-api/user
+Content-Type: application/json
+
+{
+  "name": "xyz",
+  "email": "har@example.com",
+  "password": "xyz123",
+  "profileImage": "http://example.com/image.jpg",
+  "date": "2025-02-20"
+}
+
+###
+
+### Login (POST)
+POST http://localhost:5000/user-api/login
+Content-Type: application/json
+
+{
+  "name": "xyz",
+  "password": "xyz123"
+}
+
+###
+
+### Update User (PUT)
+PUT http://localhost:5000/user-api/user
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ0OTQ3Mjk4LCJleHAiOjE3NDQ5NTA4OTh9.F3-sMPiy0BsGI-HWpRYj3VmLLBXMdhEMrBi_zHq3Iio
+
+{
+  "name": "hjui",
+  "email": "New@example.com",
+  "password": "newPassword123",
+  "profileImage": "http://example.com/new-image.jpg",
+  "date": "2025-02-21"
+}
+
+###
+
+### Logout (DELETE)
+DELETE http://localhost:5000/user-api/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ0OTQ3Mjk4LCJleHAiOjE3NDQ5NTA4OTh9.F3-sMPiy0BsGI-HWpRYj3VmLLBXMdhEMrBi_zHq3Iio
+
+###

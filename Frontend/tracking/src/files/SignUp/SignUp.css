@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Roboto+Slab:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.register-box {
+    width: 500px; /* Increased width for a larger input field */
+    height: auto;
+    padding: 40px;
+    background-color: lightblue;
+    /* background: linear-gradient(135deg, #ffa2b0 0%, #d9e3db 100%);Soft green gradient */
+    border-radius: 15px;
+    border: none; /* Clean look */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Soft shadow */
+    text-align: center;
+    font-family: "Roboto Slab", serif;
+}
+
+.textbox input {
+    width: 100%; /* Full width for input fields */
+    padding: 12px 15px 12px 35px; /* Extra padding for better usability */
+    border: none;
+    border-bottom: 2px solid #3d5afe; /* Blue border */
+    outline: none;
+    background: rgba(240, 248, 255, 0.8); /* Light background for input */
+    color: #333; /* Dark text color */
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.textbox {
+    position: relative;
+    margin-bottom: 20px; /* More space between fields */
+}
+
+.register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color: #f0f8ff; /* Light background */
+}
+
+
+
+.register-box h2 {
+    margin-bottom: 20px;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 800;
+    color: white; /* Dark blue for the heading */
+    font-size: 28px; /* Slightly larger font size */
+}
+
+
+.input-icon {
+    position: absolute;
+    left: 10px;
+    top: 12px; /* Adjusted for better alignment */
+    color: #3d5afe; /* Color matching the heading */
+}
+
+.textbox input::placeholder {
+    color: #a0a0a0; /* Placeholder color */
+}
+
+.textbox input:focus {
+    border-bottom-color: #0d47a1; /* Darker blue on focus */
+}
+
+.btn {
+    width: 50%;
+    padding: 12px;
+    background: linear-gradient(to right, #4caf50, #66bb6a); /* Green gradient for button */
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-size: 18px; /* Slightly larger font size */
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.3s ease, transform 0.2s ease; /* Smooth transition on hover */
+}
+
+.btn:hover {
+    background: linear-gradient(to right, #43a047, #4caf50); /* Darker green gradient on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .register-box {
+        width: 90%;
+        height: auto;
+        padding: 30px;
+    }
+}
+
+@media (max-width: 400px) {
+    .register-box {
+        width: 100%;
+        padding: 25px;
+    }
+
+    .btn {
+        font-size: 14px;
+    }
+}

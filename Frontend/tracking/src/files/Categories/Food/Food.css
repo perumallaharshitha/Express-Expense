@@ -1,0 +1,80 @@
+.food-container {
+  width: 100%;
+  padding: 20px;
+}
+
+.food-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.home-icon {
+  margin-right: 10px;
+  color: #333;
+  text-decoration: none;
+}
+
+.date-picker-container {
+  display: flex;
+  align-items: center;
+}
+
+.food {
+  width: 100%;
+}
+
+.food-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  font-family: 'Arial', sans-serif;
+}
+
+.food-table th,
+.food-table td {
+  padding: 10px 15px;
+  text-align: left;
+}
+
+.food-table th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.edit-icon, .delete-icon {
+  cursor: pointer;
+  margin-right: 12px;
+}
+
+.input-container {
+  margin-top: 20px;
+}
+
+.input-row {
+  display: flex;
+  justify-content: center;
+}
+
+.input-row input {
+  width: 150px;
+  margin: 0 5px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+}
+
+.save-button, .new-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px 500px;
+}
+
+.new-button {
+  background-color: #008CBA;
+}

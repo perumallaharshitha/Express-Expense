@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Roboto+Slab:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0096b7;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 999;
+}
+
+.pic {
+    height: 55px;
+    width: 150px;
+}
+
+.menu-icon {
+    display: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Desktop Navigation */
+.links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.nav-link {
+    color: violet;
+    text-decoration: none;
+    font-family: "Roboto Slab", serif;
+    transition: color 0.3s ease;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.nav-link:hover {
+    color: white;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    font-family: "Roboto Slab", serif;
+    color: violet;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    color: white;
+}
+
+.welcome-msg {
+    color: #fff;
+    font-family: "Roboto Slab", serif;
+    margin-left: 10px;
+    font-size: 0.95rem;
+}
+
+/* Mobile Specific Styles */
+@media (max-width: 768px) {
+    .menu-icon {
+        display: block;
+    }
+
+    .links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background-color: #0096b7;
+        border: 1px solid #fff;
+        padding: 10px;
+        border-radius: 6px;
+        z-index: 1000;
+    }
+
+    .links.open {
+        display: flex;
+    }
+}

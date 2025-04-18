@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Add box-sizing for better control */
+}
+
+.home-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-height: 100vh; /* Use min-height for scrolling */
+    background-color: #f0f8ff;
+    color: #2e2e2e; 
+}
+
+.left-column {
+    display: flex;
+    justify-content: center; 
+    width: 50%; 
+    padding: 20px; 
+}
+
+.finance-image {
+    max-width: 100%; /* Make image smaller */
+    height: auto; 
+    border-radius: 20px; /* Rounded borders for the image */
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    width: 50%; 
+    padding: 20px; 
+}
+
+.heading {
+    font-size: 4rem; /* Adjusted font size for title to keep it in one line */
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: #c72885; 
+    text-align: start;
+    margin-bottom: 20px;
+    white-space: nowrap; /* Prevent title from wrapping to next line */
+}
+
+.content {
+    font-family: 'Comic Sans MS', cursive, sans-serif;  
+    font-size: 1.4rem; /* Reduced font size */
+    margin: 10px 0; 
+    color: #4b8b3b; 
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row; 
+    gap: 20px; 
+    margin-top: 70px;
+    justify-content: center;
+}
+
+.button {
+    display: flex;
+    text-decoration: none;
+    align-items: center; 
+    justify-content: center; 
+    width: 260px;
+    height: 60px;
+    background-color: #e3f2fd; 
+    border: none; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+    font-size: 23px; 
+    transition: box-shadow 0.3s, transform 0.3s; 
+}
+
+.button:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); 
+    transform: translateY(-2px); 
+}
+
+.icon {
+    margin-left: 5px; 
+}
+
+.welcome-back-text {
+    background-color: transparent; /* Transparent background */
+    color: #007acc; /* Change this to your desired text color */
+    font-family: 'Comic Sans MS', cursive, sans-serif; /* Change to your preferred font */
+    font-size: 1.2rem; /* Adjust font size as needed */
+    margin-top: 10px; /* Optional margin to space it out */
+    text-align: center; /* Center align the text */
+}
+
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .home-container {
+        flex-direction: column; 
+    }
+    .left-column,
+    .right-column {
+        width: 100%; 
+        margin: 0; 
+    }
+    .heading {
+        font-size: 3rem; /* Further adjustment for smaller screens */
+    }
+    .content {
+        font-size: 1.2rem; 
+    }
+}

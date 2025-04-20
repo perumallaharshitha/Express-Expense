@@ -26,7 +26,7 @@ Content-Type: application/json
 ### Update User (PUT)
 PUT http://localhost:5000/user-api/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ0OTQ3Mjk4LCJleHAiOjE3NDQ5NTA4OTh9.F3-sMPiy0BsGI-HWpRYj3VmLLBXMdhEMrBi_zHq3Iio
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
 
 {
   "name": "hjui",
@@ -40,6 +40,48 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6Iiwia
 
 ### Logout (DELETE)
 DELETE http://localhost:5000/user-api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ0OTQ3Mjk4LCJleHAiOjE3NDQ5NTA4OTh9.F3-sMPiy0BsGI-HWpRYj3VmLLBXMdhEMrBi_zHq3Iio
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+
+###Categories Requests
+### Add a Travel Entry
+###
+POST http://localhost:5000/category-api/add/travel
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+Content-Type: application/json
+
+{
+  "SNO": 1,
+  "Destination": "Paris",
+  "Arrival": "2025-03-05",
+  "Distance": "1000km",
+  "Amount": 15000,
+  "date": "2025-03-06"
+}
 
 ###
+
+### Get All Travel Entries
+GET http://localhost:5000/category-api/get/travel
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+
+###
+
+### Update a Category Entry (replace ID with actual ObjectId)
+PUT http://localhost:5000/category-api/update/661fc9a50c2f93dddb09e9cb
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+Content-Type: application/json
+
+{
+  "Destination": "London",
+  "Amount": 18000
+}
+
+###
+
+### Delete a Category Entry (replace ID with actual ObjectId)
+DELETE http://localhost:5000/category-api/delete/661fc9a50c2f93dddb09e9cb
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+
+###
+
+

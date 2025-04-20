@@ -8,7 +8,7 @@ const app = express();
 
 // Use CORS to allow frontend communication
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:5173',  // Change this to the frontend URL if different
 }));
 
 // Middleware to parse JSON bodies
@@ -21,7 +21,10 @@ mClient
   .then((connectionObj) => {
     const fsddb = connectionObj.db("exp");  // Your DB name
     const usersCollection = fsddb.collection("tests");
-    app.set("usersCollection", usersCollection);  // Set collection to be used in routes
+    const categoriesCollection = fsddb.collection("categories"); // Create the 'categories' collection
+    app.set("usersCollection", usersCollection);  // Set collection to be used in user routes
+    app.set("categoriesCollection", categoriesCollection);  // Set collection to be used in category routes
+
     console.log("DB connection success");
 
     // Start the server
@@ -35,7 +38,11 @@ mClient
 const userApp = require("./APIs/userAPI");
 app.use("/user-api", userApp);  // Use the user API routes
 
+// Import the category API routes
+const categoryApp = require("./APIs/categoryAPI");
+app.use("/category-api", categoryApp);  // Use the category API routes
+
 // Handle invalid routes
 app.use('*', (req, res) => {
-  res.send({ message: 'Invalid path' });
+  res.status(404).send({ message: 'Invalid path' });
 });

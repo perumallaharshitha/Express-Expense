@@ -2,7 +2,7 @@ const exp = require("express");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const expressAsyncHandler = require("express-async-handler");
-const tokenVerify = require("../middlewares/tokenVerify"); // ✅ Correct import
+const tokenVerify = require("../middlewares/tokenVerify"); 
 
 const userApp = exp.Router();
 userApp.use(exp.json());

@@ -1,196 +1,340 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHome, FaEdit, FaTrash } from 'react-icons/fa';
-import DatePicker from 'react-datepicker'; 
-import 'react-datepicker/dist/react-datepicker.css'; 
+import DatePicker from 'react-datepicker';
+import axios from 'axios';
+import 'react-datepicker/dist/react-datepicker.css';
 import './Subscription.css';
 
 function Subscription() {
-  const [items, setItems] = useState([]);
-  const [name, setName] = useState('');
-  const [id, setId] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [method, setMethod] = useState('');
-  const [price, setPrice] = useState('');
-  const [paymentDate, setPaymentDate] = useState('');
-  const [nextRenewal, setNextRenewal] = useState('');
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [subItems, setSubItems] = useState([]);
+  const [subName, setSubName] = useState('');
+  const [subId, setSubId] = useState('');
+  const [subStartDate, setSubStartDate] = useState(new Date());
+  const [subEndDate, setSubEndDate] = useState(new Date());
+  const [subMethod, setSubMethod] = useState('');
+  const [subPrice, setSubPrice] = useState('');
+  const [subPaymentDate, setSubPaymentDate] = useState(new Date());
+  const [subNextRenewal, setSubNextRenewal] = useState(new Date());
+  const [subTotalAmount, setSubTotalAmount] = useState(0);
+  const [subIsEditing, setSubIsEditing] = useState(false);
+  const [subEditId, setSubEditId] = useState(null);
+  const [subSelectedDate, setSubSelectedDate] = useState(new Date());
 
+  const token = localStorage.getItem('token'); // Assumes token is stored in localStorage
+
+  // Fetch subscriptions from the backend and filter by selected date
   useEffect(() => {
-    const storedData = localStorage.getItem(selectedDate.toDateString());
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      setItems(parsedData.items);
-      setTotalAmount(parsedData.totalAmount);
-    } else {
-      setItems([]);
-      setTotalAmount(0);
-    }
-  }, [selectedDate]);
+    const fetchSubscriptions = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/category-api/get/subscriptions', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-  const addItem = () => {
-    if (!name || !id || !startDate || !endDate || !method || !price || !paymentDate || !nextRenewal) return;
-    const newItem = {
-      id: items.length + 1,
-      name,
-      idNumber: id,
-      startDate,
-      endDate,
-      method,
-      price: parseFloat(price),
-      paymentDate,
-      nextRenewal,
+        // Filter by selected date (paymentDate)
+        const filtered = response.data.data.filter(
+          (item) =>
+            new Date(item.paymentDate).toDateString() ===
+            subSelectedDate.toDateString()
+        );
+
+        setSubItems(filtered);
+        const total = filtered.reduce((sum, item) => sum + item.price, 0);
+        setSubTotalAmount(total);
+      } catch (error) {
+        console.error('Error fetching subscriptions:', error);
+      }
     };
-    const updatedItems = [...items, newItem];
-    const updatedTotal = totalAmount + parseFloat(price);
+    fetchSubscriptions();
+  }, [subSelectedDate, token]);
 
-    setItems(updatedItems);
-    setTotalAmount(updatedTotal);
+  const subAddItem = async () => {
+    if (
+      !subName ||
+      !subId ||
+      !subStartDate ||
+      !subEndDate ||
+      !subMethod ||
+      !subPrice ||
+      !subPaymentDate ||
+      !subNextRenewal
+    )
+      return;
 
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
+    const newItem = {
+      name: subName,
+      idNumber: subId,
+      startDate: subStartDate,
+      endDate: subEndDate,
+      method: subMethod,
+      price: parseFloat(subPrice),
+      paymentDate: subPaymentDate,
+      nextRenewal: subNextRenewal,
+    };
 
-    resetFields();
-    setIsEditing(false);
+    try {
+      const response = await axios.post(
+        'http://localhost:5000/category-api/add/subscriptions',
+        newItem,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const newEntry = response.data.data;
+
+      // Only add if it matches selected date
+      if (
+        new Date(newEntry.paymentDate).toDateString() ===
+        subSelectedDate.toDateString()
+      ) {
+        setSubItems([...subItems, newEntry]);
+        setSubTotalAmount((prev) => prev + parseFloat(subPrice));
+      }
+
+      subResetFields();
+    } catch (error) {
+      console.error('Error adding subscription:', error);
+    }
   };
 
-  const saveEditedItem = () => {
-    if (!name || !id || !startDate || !endDate || !method || !price || !paymentDate || !nextRenewal) return;
+  const subSaveEditedItem = async () => {
+    if (
+      !subName ||
+      !subId ||
+      !subStartDate ||
+      !subEndDate ||
+      !subMethod ||
+      !subPrice ||
+      !subPaymentDate ||
+      !subNextRenewal
+    )
+      return;
 
-    const updatedItems = items.map((item) => 
-      item.id === editId ? { ...item, name, idNumber: id, startDate, endDate, method, price: parseFloat(price), paymentDate, nextRenewal } : item
-    );
-    const updatedTotal = updatedItems.reduce((total, item) => total + item.price, 0);
+    const updatedItem = {
+      name: subName,
+      idNumber: subId,
+      startDate: subStartDate,
+      endDate: subEndDate,
+      method: subMethod,
+      price: parseFloat(subPrice),
+      paymentDate: subPaymentDate,
+      nextRenewal: subNextRenewal,
+    };
 
-    setItems(updatedItems);
-    setTotalAmount(updatedTotal);
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
+    try {
+      await axios.put(
+        `http://localhost:5000/category-api/update/${subEditId}`,
+        updatedItem,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    resetFields();
-    setIsEditing(false);
-    setEditId(null);
+      const updatedItems = subItems.map((item) =>
+        item._id === subEditId ? { ...item, ...updatedItem } : item
+      );
+
+      setSubItems(updatedItems);
+      setSubTotalAmount(
+        updatedItems.reduce((sum, item) => sum + item.price, 0)
+      );
+
+      subResetFields();
+      setSubIsEditing(false);
+      setSubEditId(null);
+    } catch (error) {
+      console.error('Error saving edited subscription:', error);
+    }
   };
 
-  const editItem = (id) => {
-    const itemToEdit = items.find((item) => item.id === id);
-    setName(itemToEdit.name);
-    setId(itemToEdit.idNumber);
-    setStartDate(itemToEdit.startDate);
-    setEndDate(itemToEdit.endDate);
-    setMethod(itemToEdit.method);
-    setPrice(itemToEdit.price);
-    setPaymentDate(itemToEdit.paymentDate);
-    setNextRenewal(itemToEdit.nextRenewal);
-    setIsEditing(true);
-    setEditId(id);
+  const subDeleteItem = async (id) => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/category-api/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const filtered = subItems.filter((item) => item._id !== id);
+      setSubItems(filtered);
+      setSubTotalAmount(filtered.reduce((sum, item) => sum + item.price, 0));
+    } catch (error) {
+      console.error('Error deleting subscription:', error);
+    }
   };
 
-  const deleteItem = (id) => {
-    const itemToDelete = items.find((item) => item.id === id);
-    const updatedItems = items.filter((item) => item.id !== id);
-    const updatedTotal = totalAmount - itemToDelete.price;
-
-    setItems(updatedItems);
-    setTotalAmount(updatedTotal);
-
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
+  const subEditItem = (id) => {
+    const itemToEdit = subItems.find((item) => item._id === id);
+    setSubName(itemToEdit.name);
+    setSubId(itemToEdit.idNumber);
+    setSubStartDate(new Date(itemToEdit.startDate));
+    setSubEndDate(new Date(itemToEdit.endDate));
+    setSubMethod(itemToEdit.method);
+    setSubPrice(itemToEdit.price);
+    setSubPaymentDate(new Date(itemToEdit.paymentDate));
+    setSubNextRenewal(new Date(itemToEdit.nextRenewal));
+    setSubIsEditing(true);
+    setSubEditId(id);
   };
 
-  const resetFields = () => {
-    setName('');
-    setId('');
-    setStartDate('');
-    setEndDate('');
-    setMethod('');
-    setPrice('');
-    setPaymentDate('');
-    setNextRenewal('');
+  const subResetFields = () => {
+    setSubName('');
+    setSubId('');
+    setSubMethod('');
+    setSubPrice('');
+    setSubStartDate(new Date());
+    setSubEndDate(new Date());
+    setSubPaymentDate(new Date());
+    setSubNextRenewal(new Date());
   };
 
   return (
-    <div className="subscription-container">
-      <div className="subscription-header">
-        <Link to="/category" className="home-icon">
-          <FaHome size={24} />
+    <div className="sub-container">
+      <div className="sub-header">
+        <Link to="/category" className="sub-home-icon">
+          <FaHome size={24} color="#000000" />
         </Link>
         <h2>Subscribed Bills!!</h2>
-        <div className="date-picker-container">
+        <div className="sub-datepicker">
           <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
+            selected={subSelectedDate}
+            onChange={(date) => setSubSelectedDate(date)}
             dateFormat="MMMM d, yyyy"
+            className="sub-datepicker-input"
           />
         </div>
       </div>
 
-      <div className="table-container">
-        <table className="subscription-table">
+      {/* Subscription Input Form */}
+      <div className="sub-input-container">
+        <div className="sub-input-group">
+          <label>Name</label>
+          <input type="text" value={subName} onChange={(e) => setSubName(e.target.value)} 
+          className="sub-input-field"
+          />
+        </div>
+        <div className="sub-input-group">
+          <label>ID</label>
+          <input type="text" value={subId} onChange={(e) => setSubId(e.target.value)} 
+          className="sub-input-field"
+          />
+        </div>
+        <div className="sub-input-group">
+          <label>Start Date</label>
+          <DatePicker
+            selected={subStartDate}
+            onChange={(date) => setSubStartDate(date)}
+            dateFormat="MMMM d, yyyy"
+            className="sub-datepicker-input"
+          />
+        </div>
+        <div className="sub-input-group">
+          <label>End Date</label>
+          <DatePicker
+            selected={subEndDate}
+            onChange={(date) => setSubEndDate(date)}
+            dateFormat="MMMM d, yyyy"
+            className="sub-datepicker-input"
+          />
+        </div>
+        <div className="sub-input-group">
+          <label>Mode of Payment</label>
+          <select
+            value={subMethod}
+            onChange={(e) => setSubMethod(e.target.value)}
+            className="sub-input-field"
+          >
+            <option value="Online">Online</option>
+            <option value="Offline">Offline</option>
+          </select>
+        </div>
+
+        <div className="sub-input-group">
+          <label>Amount</label>
+          <input type="number" value={subPrice} onChange={(e) => setSubPrice(e.target.value)}
+          className="sub-input-field"
+          />
+        </div>
+        <div className="sub-input-group">
+          <label>Date of Payment</label>
+          <DatePicker
+            selected={subPaymentDate}
+            onChange={(date) => setSubPaymentDate(date)}
+            dateFormat="MMMM d, yyyy"
+            className="sub-datepicker-input"
+          />
+        </div>
+        <div className="sub-input-group">
+          <label>Next Renewal</label>
+          <DatePicker
+            selected={subNextRenewal}
+            onChange={(date) => setSubNextRenewal(date)}
+            dateFormat="MMMM d, yyyy"
+            className="sub-datepicker-input"
+          />
+        </div>
+
+        
+          <button className="sub-save-button" onClick={subIsEditing ? subSaveEditedItem : subAddItem}>
+            {subIsEditing ? 'Save' : 'Add'}
+          </button>
+        
+      </div>
+
+      {/* Subscription Table */}
+      <div className="sub-table-container">
+        <table className="sub-table">
           <thead>
             <tr>
-              <th>S.No</th>
+              <th>SNO</th>
               <th>Name</th>
-              <th>Id</th>
+              <th>ID</th>
               <th>Start Date</th>
               <th>End Date</th>
-              <th>Method</th>
-              <th>Price</th>
-              <th>Payment Date</th>
+              <th>Mode of Payment</th>
+              <th>Amount</th>
+              <th>Date of Payment</th>
               <th>Next Renewal</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {items.map((item, index) => (
-              <tr key={item.id}>
+            {subItems.map((item, index) => (
+              <tr key={item._id}>
                 <td>{index + 1}</td>
                 <td>{item.name}</td>
                 <td>{item.idNumber}</td>
-                <td>{item.startDate}</td>
-                <td>{item.endDate}</td>
+                <td>{new Date(item.startDate).toLocaleDateString()}</td>
+                <td>{new Date(item.endDate).toLocaleDateString()}</td>
                 <td>{item.method}</td>
                 <td>{item.price}</td>
-                <td>{item.paymentDate}</td>
-                <td>{item.nextRenewal}</td>
+                <td>{new Date(item.paymentDate).toLocaleDateString()}</td>
+                <td>{new Date(item.nextRenewal).toLocaleDateString()}</td>
                 <td>
-                  <FaEdit className="edit-icon" onClick={() => editItem(item.id)} />
-                  <FaTrash className="delete-icon" onClick={() => deleteItem(item.id)} />
+                  <FaEdit className="edit-icon" onClick={() => subEditItem(item._id)} />
+                  <FaTrash className="delete-icon" onClick={() => subDeleteItem(item._id)} />
                 </td>
               </tr>
             ))}
-            {items.length > 0 && (
+            {subItems.length > 0 && (
               <tr>
                 <td colSpan="8">Grand Total</td>
-                <td>{totalAmount}</td>
+                <td>{subTotalAmount}</td>
               </tr>
             )}
           </tbody>
         </table>
-
-        {(isEditing || items.length === 0) && (
-          <div className="input-container">
-            <div className="input-row">
-              <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-              <input type="text" placeholder="Id" value={id} onChange={(e) => setId(e.target.value)} />
-              <input type="date" placeholder="Start Date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-              <input type="date" placeholder="End Date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-              <input type="text" placeholder="Method" value={method} onChange={(e) => setMethod(e.target.value)} />
-              <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
-              <input type="date" placeholder="Payment Date" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
-              <input type="date" placeholder="Next Renewal" value={nextRenewal} onChange={(e) => setNextRenewal(e.target.value)} />
-            </div>
-            <button className="save-button" onClick={isEditing ? saveEditedItem : addItem}>
-              {isEditing ? 'Save' : 'Add'}
-            </button>
-          </div>
-        )}
       </div>
-
-      {!isEditing && (
-        <button className="new-button" onClick={() => { resetFields(); setIsEditing(false); setEditId(null); setIsAdding(true); }}>New</button>
-      )}
     </div>
   );
 }

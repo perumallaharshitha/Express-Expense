@@ -1,175 +1,236 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHome, FaEdit, FaTrash } from 'react-icons/fa';
-import DatePicker from 'react-datepicker'; 
-import 'react-datepicker/dist/react-datepicker.css'; 
+import DatePicker from 'react-datepicker';
+import axios from 'axios';
+import 'react-datepicker/dist/react-datepicker.css';
 import './Clothing.css';
 
 function Clothing() {
-  const [items, setItems] = useState([]);
-  const [itemName, setItemName] = useState(''); 
-  const [quantity, setQuantity] = useState('');
-  const [discount, setDiscount] = useState(''); 
-  const [gst, setGst] = useState(''); 
-  const [amount, setAmount] = useState('');
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [isAdding, setIsAdding] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [clothItems, setClothItems] = useState([]);
+  const [clothName, setClothName] = useState('');
+  const [clothQuantity, setClothQuantity] = useState('');
+  const [clothAmount, setClothAmount] = useState('');
+  const [clothPaymentDate, setClothPaymentDate] = useState(new Date()); // Added payment date
+  const [clothIsEditing, setClothIsEditing] = useState(false);
+  const [clothEditId, setClothEditId] = useState(null);
+  const [clothTotalAmount, setClothTotalAmount] = useState(0);
+  const [clothSelectedDate, setClothSelectedDate] = useState(new Date()); // For filtering
+
+  const token = localStorage.getItem('token'); // Assumes token is stored in localStorage
 
   useEffect(() => {
-    const storedData = localStorage.getItem(selectedDate.toDateString());
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      setItems(parsedData.items);
-      setTotalAmount(parsedData.totalAmount);
-    } else {
-      setItems([]);
-      setTotalAmount(0);
-    }
-  }, [selectedDate]);
-
-  const addItem = () => {
-    if (!itemName || !quantity || !discount || !gst || !amount) return;
-    const newItem = {
-      id: items.length + 1,
-      itemName,
-      quantity,
-      discount: parseFloat(discount),
-      gst: parseFloat(gst),
-      amount: parseFloat(amount),
+    const fetchClothings = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/category-api/get/clothings', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const filtered = response.data.data.filter(
+          (item) =>
+            new Date(item.paymentDate).toDateString() ===
+            clothSelectedDate.toDateString()
+        );
+        setClothItems(filtered);
+        const total = filtered.reduce((sum, item) => sum + item.amount, 0);
+        setClothTotalAmount(total);
+      } catch (error) {
+        console.error('Error fetching clothings:', error);
+      }
     };
-    const updatedItems = [...items, newItem];
-    const updatedTotal = totalAmount + parseFloat(amount);
+    fetchClothings();
+  }, [token, clothSelectedDate]);
 
-    setItems(updatedItems);
-    setTotalAmount(updatedTotal);
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
+  const clothAddItem = async () => {
+    if (!clothName || !clothQuantity || !clothAmount || !clothPaymentDate) return;
 
-    resetFields();
-    setIsAdding(false);
+    const newItem = {
+      name: clothName,
+      quantity: parseInt(clothQuantity),
+      amount: parseFloat(clothAmount),
+      paymentDate: clothPaymentDate, // Include payment date
+    };
+
+    try {
+      const response = await axios.post(
+        'http://localhost:5000/category-api/add/clothings',
+        newItem,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const newEntry = response.data.data;
+      if (new Date(newEntry.paymentDate).toDateString() === clothSelectedDate.toDateString()) {
+        setClothItems([...clothItems, newEntry]);
+        setClothTotalAmount((prev) => prev + parseFloat(clothAmount));
+      }
+      clothResetFields();
+    } catch (error) {
+      console.error('Error adding clothing:', error);
+    }
   };
 
-  const saveEditedItem = () => {
-    if (!itemName || !quantity || !discount || !gst || !amount) return;
-    const updatedItems = items.map((currentItem) =>
-      currentItem.id === editId
-        ? { ...currentItem, itemName, quantity, discount: parseFloat(discount), gst: parseFloat(gst), amount: parseFloat(amount) }
-        : currentItem
-    );
+  const clothSaveEditedItem = async () => {
+    if (!clothName || !clothQuantity || !clothAmount || !clothPaymentDate) return;
 
-    const updatedTotal = updatedItems.reduce((total, currentItem) => total + currentItem.amount, 0);
+    const updatedItem = {
+      name: clothName,
+      quantity: parseInt(clothQuantity),
+      amount: parseFloat(clothAmount),
+      paymentDate: clothPaymentDate, // Include payment date
+    };
 
-    setItems(updatedItems);
-    setTotalAmount(updatedTotal);
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
-
-    resetFields();
-    setIsEditing(false);
-    setEditId(null);
+    try {
+      await axios.put(
+        `http://localhost:5000/category-api/update/${clothEditId}`,
+        updatedItem,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const updatedItems = clothItems.map((item) =>
+        item._id === clothEditId ? { ...item, ...updatedItem } : item
+      );
+      setClothItems(updatedItems);
+      setClothTotalAmount(updatedItems.reduce((sum, item) => sum + item.amount, 0));
+      clothResetFields();
+      setClothIsEditing(false);
+      setClothEditId(null);
+    } catch (error) {
+      console.error('Error saving edited clothing:', error);
+    }
   };
 
-  const editItem = (id) => {
-    const itemToEdit = items.find((item) => item.id === id);
-    setItemName(itemToEdit.itemName);
-    setQuantity(itemToEdit.quantity);
-    setDiscount(itemToEdit.discount);
-    setGst(itemToEdit.gst);
-    setAmount(itemToEdit.amount);
-    setIsEditing(true);
-    setEditId(id);
-    setIsAdding(true); // Show input fields for editing
+  const clothDeleteItem = async (id) => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/category-api/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const filtered = clothItems.filter((item) => item._id !== id);
+      setClothItems(filtered);
+      setClothTotalAmount(filtered.reduce((sum, item) => sum + item.amount, 0));
+    } catch (error) {
+      console.error('Error deleting clothing:', error);
+    }
   };
 
-  const deleteItem = (id) => {
-    const itemToDelete = items.find((item) => item.id === id);
-    const updatedItems = items.filter((item) => item.id !== id);
-    const updatedTotal = totalAmount - itemToDelete.amount;
-
-    setItems(updatedItems);
-    setTotalAmount(updatedTotal);
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
+  const clothEditItem = (id) => {
+    const itemToEdit = clothItems.find((item) => item._id === id);
+    setClothName(itemToEdit.name);
+    setClothQuantity(itemToEdit.quantity);
+    setClothAmount(itemToEdit.amount);
+    setClothPaymentDate(new Date(itemToEdit.paymentDate)); // Set payment date for editing
+    setClothIsEditing(true);
+    setClothEditId(id);
   };
 
-  const resetFields = () => {
-    setItemName('');
-    setQuantity('');
-    setDiscount('');
-    setGst('');
-    setAmount('');
+  const clothResetFields = () => {
+    setClothName('');
+    setClothQuantity('');
+    setClothAmount('');
+    setClothPaymentDate(new Date()); // Reset payment date
   };
 
   return (
-    <div className="clothing-container">
-      <div className="clothing-header">
-        <Link to="/category" className="home-icon">
-          <FaHome size={24} />
+    <div className="cloth-container">
+      <div className="cloth-header">
+        <Link to="/category" className="cloth-home-icon">
+          <FaHome size={24} color="#000000" />
         </Link>
         <h2>New Arrivals!!</h2>
-        <div className="date-picker-container">
+        <div className="cloth-datepicker">
           <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
+            selected={clothSelectedDate}
+            onChange={(date) => setClothSelectedDate(date)}
             dateFormat="MMMM d, yyyy"
+            className="cloth-datepicker-input"
           />
         </div>
       </div>
 
-      <div className="table-container">
-        <table className="clothing-table">
+      <div className="cloth-input-container">
+        <div className="cloth-input-group">
+          <label>Name</label>
+          <input
+            type="text"
+            value={clothName}
+            onChange={(e) => setClothName(e.target.value)}
+            className="cloth-input-field"
+          />
+        </div>
+        <div className="cloth-input-group">
+          <label>Quantity</label>
+          <input
+            type="number"
+            value={clothQuantity}
+            onChange={(e) => setClothQuantity(e.target.value)}
+            className="cloth-input-field"
+          />
+        </div>
+        <div className="cloth-input-group">
+          <label>Amount</label>
+          <input
+            type="number"
+            value={clothAmount}
+            onChange={(e) => setClothAmount(e.target.value)}
+            className="cloth-input-field"
+          />
+        </div>
+        <button className="cloth-save-button" onClick={clothIsEditing ? clothSaveEditedItem : clothAddItem}>
+          {clothIsEditing ? 'Save' : 'Add'}
+        </button>
+      </div>
+
+      <div className="cloth-table-container">
+        <table className="cloth-table">
           <thead>
             <tr>
-              <th>S.No</th>
+              <th>SNO</th>
               <th>Name</th>
               <th>Quantity</th>
-              <th>Discount</th>
-              <th>GST</th>
               <th>Amount</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {items.map((item, index) => (
-              <tr key={item.id}>
+            {clothItems.map((item, index) => (
+              <tr key={item._id}>
                 <td>{index + 1}</td>
-                <td>{item.itemName}</td>
+                <td>{item.name}</td>
                 <td>{item.quantity}</td>
-                <td>{item.discount}</td>
-                <td>{item.gst}</td>
                 <td>{item.amount}</td>
                 <td>
-                  <FaEdit className="edit-icon" onClick={() => editItem(item.id)} />
-                  <FaTrash className="delete-icon" onClick={() => deleteItem(item.id)} />
+                  <FaEdit
+                    className="cloth-edit-icon"
+                    onClick={() => clothEditItem(item._id)}
+                  />
+                  <FaTrash
+                    className="cloth-delete-icon"
+                    onClick={() => clothDeleteItem(item._id)}
+                  />
                 </td>
               </tr>
             ))}
-            {items.length > 0 && (
+            {clothItems.length > 0 && (
               <tr>
-                <td colSpan="5">Grand Total</td>
-                <td>{totalAmount}</td>
+                <td colSpan="3">Grand Total</td>
+                <td>{clothTotalAmount}</td>
+                <td></td> {/* Empty cell for actions column */}
               </tr>
             )}
           </tbody>
         </table>
-
-        {(isAdding || isEditing) && (
-          <div className="input-container">
-            <div className="input-row">
-              <input type="text" placeholder="Name" value={itemName} onChange={(e) => setItemName(e.target.value)} />
-              <input type="number" placeholder="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
-              <input type="number" placeholder="Discount" value={discount} onChange={(e) => setDiscount(e.target.value)} />
-              <input type="number" placeholder="GST" value={gst} onChange={(e) => setGst(e.target.value)} />
-              <input type="number" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
-            </div>
-            <button className="save-button" onClick={isEditing ? saveEditedItem : addItem}>
-              {isEditing ? 'Save' : 'Add'}
-            </button>
-          </div>
-        )}
       </div>
-
-      <button className="new-button" onClick={() => { resetFields(); setIsAdding(true); setIsEditing(false); }}>New</button>
     </div>
   );
 }

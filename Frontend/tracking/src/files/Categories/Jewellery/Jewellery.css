@@ -1,6 +1,3 @@
-/* This CSS will be identical to Jewellery.css to achieve the same UI */
-/* You can simply copy the content of Jewellery.css into Medical.css */
-
 /* Container & Header */
 .jewellery-container {
   width: 100%;
@@ -46,7 +43,7 @@
 
 .jewellery-input-row {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   margin-bottom: 10px; /* Space between input row and button */
 }
 
@@ -71,19 +68,11 @@
   box-sizing: border-box;
 }
 
-.jewellery-input-group select.jewellery-input-field {
-  appearance: none; /* Remove default arrow */
-  background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23343a40" viewBox="0 0 4 5"><path d="M2 0L0 2h4L2 0z"/></svg>');
-  background-repeat: no-repeat;
-  background-position-x: 100%;
-  background-position-y: 50%;
-  padding-right: 25px;
-}
-
 /* Save Button */
 .jewellery-save-button {
-  background-color: #daa520; /* Goldenrod */
+  background-color: #45a049; /* Goldenrod */
   color: white;
+  margin-top: 20px;
   padding: 10px 20px;
   border: none;
   border-radius: 6px;

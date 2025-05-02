@@ -3,191 +3,258 @@ import { Link } from 'react-router-dom';
 import { FaHome, FaEdit, FaTrash } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import './Jewelley.css';
+import './Jewellery.css';
 
 function Jewellery() {
-  const [items, setItems] = useState([]);
-  const [item, setItem] = useState('');
-  const [purity, setPurity] = useState('');
-  const [price, setPrice] = useState('');
-  const [weight, setWeight] = useState('');
-  const [makingCharges, setMakingCharges] = useState('');
-  const [gst, setGst] = useState('');
-  const [totalPrice, setTotalPrice] = useState('');
-  const [calculatedAmount, setCalculatedAmount] = useState(0);
-  const [isAdding, setIsAdding] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [jewelleryItems, setJewelleryItems] = useState([]);
+  const [jewelleryName, setJewelleryName] = useState('');
+  const [jewelleryType, setJewelleryType] = useState('');
+  const [jewelleryWeight, setJewelleryWeight] = useState('');
+  const [jewelleryAmount, setJewelleryAmount] = useState('');
+  const [jewelleryPaymentDate, setJewelleryPaymentDate] = useState(new Date()); // Added payment date
+  const [jewelleryIsEditing, setJewelleryIsEditing] = useState(false);
+  const [jewelleryEditId, setJewelleryEditId] = useState(null);
+  const [jewelleryTotalAmount, setJewelleryTotalAmount] = useState(0);
+  const [jewellerySelectedDate, setJewellerySelectedDate] = useState(new Date()); // For filtering
+
+  const token = localStorage.getItem('token'); // Assumes token is stored in localStorage
 
   useEffect(() => {
-    const storedData = localStorage.getItem(selectedDate.toDateString());
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      setItems(parsedData.items);
-      setCalculatedAmount(parsedData.totalAmount);
-    } else {
-      setItems([]);
-      setCalculatedAmount(0);
-    }
-  }, [selectedDate]);
-
-  const addItem = () => {
-    if (!item || !purity || !price || !weight || !makingCharges || !gst || !totalPrice) return;
-    const amount = parseFloat(totalPrice);
-    const newItem = {
-      id: items.length + 1,
-      item,
-      purity,
-      price,
-      weight,
-      makingCharges,
-      gst,
-      amount,
+    const fetchJewellery = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/category-api/get/jewellery', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const filtered = response.data.data.filter(
+          (item) =>
+            new Date(item.paymentDate).toDateString() ===
+            jewellerySelectedDate.toDateString()
+        );
+        setJewelleryItems(filtered);
+        const total = filtered.reduce((sum, item) => sum + item.amount, 0);
+        setJewelleryTotalAmount(total);
+      } catch (error) {
+        console.error('Error fetching jewellery:', error);
+      }
     };
-    const updatedItems = [...items, newItem];
-    const updatedTotal = calculatedAmount + amount;
+    fetchJewellery();
+  }, [token, jewellerySelectedDate]);
 
-    setItems(updatedItems);
-    setCalculatedAmount(updatedTotal);
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
+  const jewelleryAddItem = async () => {
+    if (!jewelleryName || !jewelleryType || !jewelleryWeight || !jewelleryAmount || !jewelleryPaymentDate) return;
 
-    resetFields();
-    setIsAdding(false);
+    const newItem = {
+      name: jewelleryName,
+      type: jewelleryType,
+      weight: parseFloat(jewelleryWeight),
+      amount: parseFloat(jewelleryAmount),
+      paymentDate: jewelleryPaymentDate, // Include payment date
+    };
+
+    try {
+      const response = await axios.post(
+        'http://localhost:5000/category-api/add/jewellery',
+        newItem,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const newEntry = response.data.data;
+      if (new Date(newEntry.paymentDate).toDateString() === jewellerySelectedDate.toDateString()) {
+        setJewelleryItems([...jewelleryItems, newEntry]);
+        setJewelleryTotalAmount((prev) => prev + parseFloat(jewelleryAmount));
+      }
+      jewelleryResetFields();
+    } catch (error) {
+      console.error('Error adding jewellery:', error);
+    }
   };
 
-  const saveEditedItem = () => {
-    if (!item || !purity || !price || !weight || !makingCharges || !gst || !totalPrice) return;
-    const amount = parseFloat(totalPrice);
-    
-    const updatedItems = items.map((currentItem) =>
-      currentItem.id === editId
-        ? { ...currentItem, item, purity, price, weight, makingCharges, gst, amount }
-        : currentItem
-    );
+  const jewellerySaveEditedItem = async () => {
+    if (!jewelleryName || !jewelleryType || !jewelleryWeight || !jewelleryAmount || !jewelleryPaymentDate) return;
 
-    const updatedTotal = updatedItems.reduce((total, currentItem) => total + currentItem.amount, 0);
+    const updatedItem = {
+      name: jewelleryName,
+      type: jewelleryType,
+      weight: parseFloat(jewelleryWeight),
+      amount: parseFloat(jewelleryAmount),
+      paymentDate: jewelleryPaymentDate, // Include payment date
+    };
 
-    setItems(updatedItems);
-    setCalculatedAmount(updatedTotal);
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
-
-    resetFields();
-    setIsEditing(false);
-    setEditId(null);
+    try {
+      await axios.put(
+        `http://localhost:5000/category-api/update/${jewelleryEditId}`,
+        updatedItem,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const updatedItems = jewelleryItems.map((item) =>
+        item._id === jewelleryEditId ? { ...item, ...updatedItem } : item
+      );
+      setJewelleryItems(updatedItems);
+      setJewelleryTotalAmount(updatedItems.reduce((sum, item) => sum + item.amount, 0));
+      jewelleryResetFields();
+      setJewelleryIsEditing(false);
+      setJewelleryEditId(null);
+    } catch (error) {
+      console.error('Error saving edited jewellery:', error);
+    }
   };
 
-  const editItem = (id) => {
-    const itemToEdit = items.find((item) => item.id === id);
-    setItem(itemToEdit.item);
-    setPurity(itemToEdit.purity);
-    setPrice(itemToEdit.price);
-    setWeight(itemToEdit.weight);
-    setMakingCharges(itemToEdit.makingCharges);
-    setGst(itemToEdit.gst);
-    setTotalPrice(itemToEdit.amount);
-    setIsEditing(true);
-    setEditId(id);
+  const jewelleryDeleteItem = async (id) => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/category-api/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const filtered = jewelleryItems.filter((item) => item._id !== id);
+      setJewelleryItems(filtered);
+      setJewelleryTotalAmount(filtered.reduce((sum, item) => sum + item.amount, 0));
+    } catch (error) {
+      console.error('Error deleting jewellery:', error);
+    }
   };
 
-  const deleteItem = (id) => {
-    const itemToDelete = items.find((item) => item.id === id);
-    const updatedItems = items.filter((item) => item.id !== id);
-    const updatedTotal = calculatedAmount - itemToDelete.amount;
-
-    setItems(updatedItems);
-    setCalculatedAmount(updatedTotal);
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
+  const jewelleryEditItem = (id) => {
+    const itemToEdit = jewelleryItems.find((item) => item._id === id);
+    setJewelleryName(itemToEdit.name);
+    setJewelleryType(itemToEdit.type);
+    setJewelleryWeight(itemToEdit.weight);
+    setJewelleryAmount(itemToEdit.amount);
+    setJewelleryPaymentDate(new Date(itemToEdit.paymentDate)); // Set payment date for editing
+    setJewelleryIsEditing(true);
+    setJewelleryEditId(id);
   };
 
-  const resetFields = () => {
-    setItem('');
-    setPurity('');
-    setPrice('');
-    setWeight('');
-    setMakingCharges('');
-    setGst('');
-    setTotalPrice('');
+  const jewelleryResetFields = () => {
+    setJewelleryName('');
+    setJewelleryType('');
+    setJewelleryWeight('');
+    setJewelleryAmount('');
+    setJewelleryPaymentDate(new Date()); // Reset payment date
   };
 
   return (
     <div className="jewellery-container">
       <div className="jewellery-header">
-        <Link to="/category" className="home-icon">
-          <FaHome size={24} />
+        <Link to="/category" className="jewellery-home-icon">
+          <FaHome size={24} color="#000000" />
         </Link>
-        <h2>Golden Glow!!</h2>
-        <div className="date-picker-container">
+        <h2>Exquisite Jewellery!!</h2>
+        <div className="jewellery-datepicker">
           <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            dateFormat="MMMM d, yyyy"
+            selected={jewellerySelectedDate}
+            onChange={(date) => setJewellerySelectedDate(date)}
+            dateFormat="MMMM d, yyyy" // Corrected dateFormat
+            className="jewellery-datepicker-input"
           />
         </div>
       </div>
 
-      <div className="table-container">
+      <div className="jewellery-input-container">
+        <div className="jewellery-input-row">
+          <div className="jewellery-input-group">
+            <label>Name</label>
+            <input
+              type="text"
+              value={jewelleryName}
+              onChange={(e) => setJewelleryName(e.target.value)}
+              className="jewellery-input-field"
+            />
+          </div>
+          <div className="jewellery-input-group">
+            <label>Type</label>
+            <select
+              value={jewelleryType}
+              onChange={(e) => setJewelleryType(e.target.value)}
+              className="jewellery-input-field"
+            >
+              <option value="">Select Type</option>
+              <option value="Gold">Gold</option>
+              <option value="Silver">Silver</option>
+              <option value="Diamonds">Diamonds</option>
+              <option value="Platinum">Platinum</option>
+            </select>
+          </div>
+          <div className="jewellery-input-group">
+            <label>Weight</label>
+            <input
+              type="number"
+              step="0.01"
+              value={jewelleryWeight}
+              onChange={(e) => setJewelleryWeight(e.target.value)}
+              className="jewellery-input-field"
+            />
+          </div>
+          <div className="jewellery-input-group">
+            <label>Amount</label>
+            <input
+              type="number"
+              value={jewelleryAmount}
+              onChange={(e) => setJewelleryAmount(e.target.value)}
+              className="jewellery-input-field"
+            />
+          </div>
+          <button className="jewellery-save-button" onClick={jewelleryIsEditing ? jewellerySaveEditedItem : jewelleryAddItem}>
+          {jewelleryIsEditing ? 'Save' : 'Add'}
+        </button>
+        </div>
+        
+      </div>
+
+      <div className="jewellery-table-container">
         <table className="jewellery-table">
           <thead>
             <tr>
-              <th>S.No</th>
+              <th>SNO</th>
               <th>Name</th>
-              <th>Purity</th>
-              <th>Price/gram</th>
-              <th>Weight (gm)</th>
-              <th>Making Charges</th>
-              <th>GST</th>
-              <th>Total Price</th>
+              <th>Type</th>
+              <th>Weight</th>
+              <th>Amount</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {items.map((item, index) => (
-              <tr key={item.id}>
+            {jewelleryItems.map((item, index) => (
+              <tr key={item._id}>
                 <td>{index + 1}</td>
-                <td>{item.item}</td>
-                <td>{item.purity}</td>
-                <td>{item.price}</td>
+                <td>{item.name}</td>
+                <td>{item.type}</td>
                 <td>{item.weight}</td>
-                <td>{item.makingCharges}</td>
-                <td>{item.gst}</td>
                 <td>{item.amount}</td>
                 <td>
-                  <FaEdit className="edit-icon" onClick={() => editItem(item.id)} />
-                  <FaTrash className="delete-icon" onClick={() => deleteItem(item.id)} />
+                  <FaEdit
+                    className="jewellery-edit-icon"
+                    onClick={() => jewelleryEditItem(item._id)}
+                  />
+                  <FaTrash
+                    className="jewellery-delete-icon"
+                    onClick={() => jewelleryDeleteItem(item._id)}
+                  />
                 </td>
               </tr>
             ))}
-            {items.length > 0 && (
+            {jewelleryItems.length > 0 && (
               <tr>
-                <td colSpan="7">Grand Total</td>
-                <td>{calculatedAmount}</td>
+                <td colSpan="5">Grand Total</td>
+                <td>{jewelleryTotalAmount}</td>
+                <td></td> {/* Empty cell for actions column */}
               </tr>
             )}
           </tbody>
         </table>
-
-        {(isAdding || isEditing) && (
-          <div className="input-container">
-            <div className="input-row">
-              <input type="text" placeholder="Item" value={item} onChange={(e) => setItem(e.target.value)} />
-              <input type="text" placeholder="Purity" value={purity} onChange={(e) => setPurity(e.target.value)} />
-              <input type="number" placeholder="Price/gram" value={price} onChange={(e) => setPrice(e.target.value)} />
-              <input type="number" placeholder="Weight (gm)" value={weight} onChange={(e) => setWeight(e.target.value)} />
-              <input type="number" placeholder="Making Charges" value={makingCharges} onChange={(e) => setMakingCharges(e.target.value)} />
-              <input type="number" placeholder="GST" value={gst} onChange={(e) => setGst(e.target.value)} />
-              <input type="number" placeholder="Total Price" value={totalPrice} onChange={(e) => setTotalPrice(e.target.value)} /> 
-            </div>
-            <button className="save-button" onClick={isEditing ? saveEditedItem : addItem}>
-              {isEditing ? 'Save' : 'Add'}
-            </button>
-          </div>
-        )}
       </div>
-
-      {!isEditing && (
-        <button className="new-button" onClick={() => { resetFields(); setIsAdding(true); }}>New</button>
-      )}
     </div>
   );
 }

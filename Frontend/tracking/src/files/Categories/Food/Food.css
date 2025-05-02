@@ -1,80 +1,170 @@
+/* Container & Header */
 .food-container {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
+  font-family: 'Arial', sans-serif;
 }
 
 .food-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 20px;
 }
 
-.home-icon {
-  margin-right: 10px;
-  color: #333;
-  text-decoration: none;
+.food-header h2 {
+  font-size: 24px;
+  margin: 0;
+  font-weight: bold;
 }
 
-.date-picker-container {
+.food-datepicker {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
-.food {
+/* Input Layout */
+.food-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Reduced gap for better alignment */
+  align-items: center; /* Vertically align items in the container */
+  margin-bottom: 20px;
+}
+
+.food-input-group {
+  flex: 1 1 auto; /* Allow input groups to take necessary width */
+  min-width: 120px; /* Adjust minimum width as needed */
+  display: flex;
+  flex-direction: column;
+}
+
+.food-input-group label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.food-input-field,
+.food-datepicker-input,
+.react-datepicker__input-container input {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
   width: 100%;
+  box-sizing: border-box;
+}
+
+/* Save Button */
+.food-save-button {
+  background-color: #45a049; /* Match Clothing button color */
+  color: white;
+  padding: 10px 10px; /* Adjust padding for size */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.food-save-button:hover {
+  background-color: #45a049; /* Match Clothing button hover color */
+}
+
+/* Table Styling */
+.food-table-container {
+  overflow-x: auto;
 }
 
 .food-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0 auto;
-  font-family: 'Arial', sans-serif;
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .food-table th,
 .food-table td {
-  padding: 10px 15px;
-  text-align: left;
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
 }
 
 .food-table th {
-  background-color: #f1f1f1;
-  font-weight: bold;
-}
-
-.edit-icon, .delete-icon {
-  cursor: pointer;
-  margin-right: 12px;
-}
-
-.input-container {
-  margin-top: 20px;
-}
-
-.input-row {
-  display: flex;
-  justify-content: center;
-}
-
-.input-row input {
-  width: 150px;
-  margin: 0 5px;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  padding: 10px;
-}
-
-.save-button, .new-button {
-  background-color: #4CAF50;
+  background-color: lightsalmon; /* Match Clothing table header color */
   color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 10px 500px;
+  text-transform: uppercase;
 }
 
-.new-button {
-  background-color: #008CBA;
+/* .food-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+} */
+
+.food-table tr:hover {
+  background-color: #e9ecef;
+}
+
+/* Buttons */
+.edit-icon,
+.delete-icon {
+  cursor: pointer;
+  margin: 0 5px;
+  font-size: 16px; /* Match Clothing icon size */
+}
+
+.edit-icon {
+  color: #28a745; /* Match Clothing edit icon color */
+}
+
+.delete-icon {
+  color: #dc3545; /* Match Clothing delete icon color */
+}
+
+/* DatePicker Specific Styles */
+.food-datepicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.food-datepicker-input {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 150px; /* Adjust width as needed */
+  box-sizing: border-box;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .food-input-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .food-input-group {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .food-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .food-table th,
+  .food-table td {
+    font-size: 12px;
+    padding: 10px;
+  }
 }

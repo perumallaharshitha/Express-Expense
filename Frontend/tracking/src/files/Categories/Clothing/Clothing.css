@@ -1,83 +1,171 @@
-.clothing-container {
+/* Container & Header */
+.cloth-container {
   width: 100%;
-  padding: 20px;
-}
-
-.clothing-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.home-icon {
-  margin-right: 10px;
-  color: #333;
-  text-decoration: none;
-}
-
-.date-picker-container {
-  display: flex;
-  align-items: center;
-  border-collapse: collapse;
-}
-
-.table-container {
-  width: 100%;
-}
-
-.clothing-table {
-  width: 100%;
-  border-collapse: collapse;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 20px;
   font-family: 'Arial', sans-serif;
 }
 
-.clothing-table th,
-.clothing-table td {
-  padding: 10px 15px;
-  text-align: left;
+.cloth-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.clothing-table th {
-  background-color: #f1f1f1;
+.cloth-header h2 {
+  font-size: 24px;
+  margin: 0;
   font-weight: bold;
 }
 
-.edit-icon,
-.delete-icon {
-  cursor: pointer;
-  margin-right: 12px;
-}
-
-.input-container {
-  margin-top: 20px;
-}
-
-.input-row {
+.cloth-datepicker {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
-.input-row input {
-  width: 150px;
-  margin: 0 5px;
-  border: none;
-  border-bottom: 1px solid #ccc;
+/* Input Layout */
+.cloth-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.cloth-input-group {
+  flex: 1 1 calc(25% - 20px); /* Adjust for the number of input fields */
+  min-width: 150px; /* Adjust minimum width */
+  display: flex;
+  flex-direction: column;
+}
+
+.cloth-input-group label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.cloth-input-field,
+.cloth-datepicker-input,
+.react-datepicker__input-container input {
   padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.save-button,
-.new-button {
-  background-color: #4CAF50;
+/* Save Button */
+.cloth-save-button {
+  background-color: #45a049;
   color: white;
-  border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  margin: 10px 500px;
+  margin-top: 10px;
+  font-size: 14px;
+  align-self: last baseline;
 }
 
-.new-button {
-  background-color: #008CBA;
+.cloth-save-button:hover {
+  background-color: #45a049;
+}
+
+/* Table Styling */
+.cloth-table-container {
+  overflow-x: auto;
+}
+
+.cloth-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.cloth-table th,
+.cloth-table td {
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.cloth-table th {
+  background-color: lightsalmon;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* .cloth-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+} */
+
+.cloth-table tr:hover {
+  background-color: #e9ecef;
+}
+
+/* Buttons */
+.cloth-edit-icon,
+.cloth-delete-icon {
+  cursor: pointer;
+  margin: 0 5px;
+  font-size: 16px;
+}
+
+.cloth-edit-icon {
+  color: #28a745;
+}
+
+.cloth-delete-icon {
+  color: #dc3545;
+}
+
+/* DatePicker Specific Styles (if needed - the default styles from the library are usually sufficient) */
+.cloth-datepicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cloth-datepicker-input {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 150px; /* Adjust width as needed */
+  box-sizing: border-box;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .cloth-input-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .cloth-input-group {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .cloth-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cloth-table th,
+  .cloth-table td {
+    font-size: 12px;
+    padding: 10px;
+  }
 }

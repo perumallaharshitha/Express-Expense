@@ -1,187 +1,251 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import DatePicker from 'react-datepicker'; // Ensure this is imported
-import 'react-datepicker/dist/react-datepicker.css';
-import { FaHome, FaEdit, FaTrash } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { getValidTokenOrLogout } from '../../contexts/auth';
+import DatePicker from 'react-datepicker'; // Import DatePicker
+import { Link } from 'react-router-dom'; // Import Link for navigation
+import { FaHome } from 'react-icons/fa'; // Import Home icon
+import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
 import './Travel.css';
 
-function Travel() {
-  const [items, setItems] = useState([]);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [isAdding, setIsAdding] = useState(false);
-  const [editId, setEditId] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [registrationDate, setRegistrationDate] = useState(null);
-  const [destination, setDestination] = useState('');
-  const [arrival, setArrival] = useState('');
-  const [itemCost, setItemCost] = useState(''); // Changed from price to itemCost
-  const [itemTotal, setItemTotal] = useState(''); // Changed from amount to itemTotal
+export default function Travel() {
+  const [entries, setEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Input form state
+  const [travelFromName, setTravelFromName] = useState('');
+  const [travelFromDate, setTravelFromDate] = useState(new Date());
+  const [travelToName, setTravelToName] = useState('');
+  const [travelToDate, setTravelToDate] = useState(new Date());
+  const [travelAmount, setTravelAmount] = useState('');
+  
+  // New state for the Date Recorded field (will not be shown)
+  const [travelDateRecorded, setTravelDateRecorded] = useState(new Date());
 
-  // Fetch registration date from the backend
-  useEffect(() => {
-    async function fetchRegistrationDate() {
-      try {
-        const response = await fetch('/APIs/registration.js', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        const data = await response.json();
-        setRegistrationDate(new Date(data.registrationDate));
-      } catch (error) {
-        console.error('Error fetching registration date:', error);
-      }
+  // State for success/error messages
+  const [message, setMessage] = useState('');
+
+  const travelFetchEntries = async () => {
+    const token = getValidTokenOrLogout();
+    if (!token) return;
+
+    try {
+      const res = await axios.get("http://localhost:5000/category-api/get/travel", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setEntries(res.data.data);
+    } catch (err) {
+      setMessage("Failed to fetch travel data.");
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const travelAddEntry = async () => {
+    const token = getValidTokenOrLogout();
+    if (!token) return;
+
+    if (!travelFromName || !travelFromDate || !travelToName || !travelToDate || !travelAmount) {
+      setMessage("Please fill in all fields.");
+      return;
     }
 
-    fetchRegistrationDate();
+    try {
+      await axios.post("http://localhost:5000/category-api/add/travel", {
+        SNO: entries.length + 1,
+        FromName: travelFromName,
+        FromDate: new Date(travelFromDate), // Store as Date object
+        ToName: travelToName,
+        ToDate: new Date(travelToDate), // Store as Date object
+        Amount: parseFloat(travelAmount),
+        DateRecorded: travelDateRecorded // Store Date Recorded in DB
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setMessage("Entry added successfully!");
+      travelFetchEntries();
+      // Clear inputs after adding
+      setTravelFromName('');
+      setTravelFromDate(new Date());
+      setTravelToName('');
+      setTravelToDate(new Date());
+      setTravelAmount('');
+    } catch (err) {
+      setMessage("Failed to add entry.");
+      console.error("Add error:", err);
+    }
+  };
+
+  const travelHandleDelete = async (id) => {
+    const token = getValidTokenOrLogout();
+    if (!token) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/category-api/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage("Entry deleted successfully!");
+      travelFetchEntries();
+    } catch (err) {
+      setMessage("Failed to delete entry.");
+      console.error("Delete error:", err);
+    }
+  };
+
+  const travelHandleEdit = async (id) => {
+    const entry = entries.find((entry) => entry._id === id);
+    setTravelFromName(entry.FromName);
+    setTravelFromDate(new Date(entry.FromDate));
+    setTravelToName(entry.ToName);
+    setTravelToDate(new Date(entry.ToDate));
+    setTravelAmount(entry.Amount);
+
+    // Modify the add function to be an update function
+    await axios.put(`http://localhost:5000/category-api/update/${id}`, {
+      FromName: travelFromName,
+      FromDate: travelFromDate,
+      ToName: travelToName,
+      ToDate: travelToDate,
+      Amount: travelAmount
+    });
+
+    setMessage("Entry updated successfully!");
+    travelFetchEntries();
+  };
+
+  useEffect(() => {
+    travelFetchEntries();
   }, []);
 
-  // Load items based on selected date
-  useEffect(() => {
-    const storedData = localStorage.getItem(selectedDate.toDateString());
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      setItems(parsedData.items);
-      setTotalAmount(parsedData.totalAmount);
-    } else {
-      setItems([]);
-      setTotalAmount(0);
-    }
-  }, [selectedDate]);
-
-  const addItem = () => {
-    if (!destination || !arrival || !itemCost) return;
-    const newItem = {
-      id: items.length + 1,
-      destination,
-      arrival,
-      price: parseFloat(itemCost), // Keep the name "price" for the item object
-      amount: parseFloat(itemCost), // Keep the name "amount" for the item object
-    };
-    const updatedItems = [...items, newItem];
-    const updatedTotal = totalAmount + newItem.amount;
-
-    setItems(updatedItems);
-    setTotalAmount(updatedTotal);
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
-
-    resetFields();
-    setIsAdding(false);
-  };
-
-  const saveEditedItem = () => {
-    const updatedItems = items.map((item) =>
-      item.id === editId ? { ...item, destination, arrival, price: parseFloat(itemCost), amount: parseFloat(itemCost) } : item
-    );
-    const updatedTotal = updatedItems.reduce((total, item) => total + item.amount, 0);
-
-    setItems(updatedItems);
-    setTotalAmount(updatedTotal);
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
-
-    resetFields();
-    setIsAdding(false);
-    setEditId(null);
-  };
-
-  const editItem = (id) => {
-    const itemToEdit = items.find((item) => item.id === id);
-    setDestination(itemToEdit.destination);
-    setArrival(itemToEdit.arrival);
-    setItemCost(itemToEdit.price); // Updated to itemCost
-    setIsAdding(true);
-    setEditId(id);
-  };
-
-  const deleteItem = (id) => {
-    const itemToDelete = items.find((item) => item.id === id);
-    const updatedItems = items.filter((item) => item.id !== id);
-    const updatedTotal = totalAmount - itemToDelete.amount;
-
-    setItems(updatedItems);
-    setTotalAmount(updatedTotal);
-    localStorage.setItem(selectedDate.toDateString(), JSON.stringify({ items: updatedItems, totalAmount: updatedTotal }));
-  };
-
-  const resetFields = () => {
-    setDestination('');
-    setArrival('');
-    setItemCost('');
-    setItemTotal('');
-  };
+  if (loading) return <div className="travel-loading">Loading...</div>;
 
   return (
     <div className="travel-container">
       <div className="travel-header">
-        <Link to="/category" className="home-icon">
-          <FaHome size={24} />
+        <Link to="/category" className="travel-home-icon">
+          <FaHome size={24} color="#000000" /> 
         </Link>
-        <h2>Travel Expenses</h2>
-        <div className="date-picker-container">
+        <h2>Travel Entries</h2>
+        <div className="travel-datepicker">
           <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
+            selected={travelDateRecorded}
+            onChange={(date) => setTravelDateRecorded(date)}
             dateFormat="MMMM d, yyyy"
+            className="travel-datepicker-input"
           />
         </div>
       </div>
 
-      <div className="travel">
-        <table className="travel-table">
-          <thead>
-            <tr>
-              <th>S.No</th>
-              <th>Destination</th>
-              <th>Arrival</th>
-              <th>Price</th>
-              <th>Amount</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, index) => (
-              <tr key={item.id}>
-                <td>{index + 1}</td>
-                <td>{item.destination}</td>
-                <td>{item.arrival}</td>
-                <td>{item.price}</td>
-                <td>{item.amount}</td>
-                <td>
-                  <FaEdit className="edit-icon" onClick={() => editItem(item.id)} />
-                  <FaTrash className="delete-icon" onClick={() => deleteItem(item.id)} />
-                </td>
-              </tr>
-            ))}
-            {items.length > 0 && (
-              <tr>
-                <td colSpan="4">Total</td>
-                <td>{totalAmount}</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      {message && <div className="travel-message">{message}</div>}
 
-        {isAdding && (
-          <div className="input-container">
-            <div className="input-row">
-              <input type="text" placeholder="Destination" value={destination} onChange={(e) => setDestination(e.target.value)} />
-              <input type="text" placeholder="Arrival" value={arrival} onChange={(e) => setArrival(e.target.value)} />
-              <input type="number" placeholder="Price" value={itemCost} onChange={(e) => setItemCost(e.target.value)} /> {/* Updated to itemCost */}
-              <input type="number" placeholder="Amount" value={itemTotal} readOnly /> {/* Updated to itemTotal */}
-            </div>
-            <button className="save-button" onClick={editId ? saveEditedItem : addItem}>
-              {editId ? 'Save' : 'Save'}
-            </button>
-          </div>
-        )}
+      <div className="travel-input-container">
+        <div className="travel-input-group">
+          <label>From Name</label>
+          <input
+            type="text"
+            placeholder="From Name"
+            value={travelFromName}
+            onChange={(e) => setTravelFromName(e.target.value)}
+            className="travel-input-field"
+          />
+        </div>
+
+        <div className="travel-input-group">
+          <label>From Date</label>
+          <DatePicker
+            selected={travelFromDate}
+            onChange={(date) => setTravelFromDate(date)}
+            dateFormat="MMMM d, yyyy"
+            className="travel-datepicker-input"
+          />
+        </div>
+
+        <div className="travel-input-group">
+          <label>To Name</label>
+          <input
+            type="text"
+            placeholder="To Name"
+            value={travelToName}
+            onChange={(e) => setTravelToName(e.target.value)}
+            className="travel-input-field"
+          />
+        </div>
+
+        <div className="travel-input-group">
+          <label>To Date</label>
+          <DatePicker
+            selected={travelToDate}
+            onChange={(date) => setTravelToDate(date)}
+            dateFormat="MMMM d, yyyy"
+            className="travel-datepicker-input"
+          />
+        </div>
+
+        <div className="travel-input-group">
+          <label>Amount</label>
+          <input
+            type="number"
+            placeholder="Amount"
+            value={travelAmount}
+            onChange={(e) => setTravelAmount(e.target.value)}
+            className="travel-input-field"
+          />
+        </div>
+        <input
+          type="hidden"
+          value={travelDateRecorded}
+          onChange={(e) => setTravelDateRecorded(new Date(e.target.value))}
+        />
+
+        <button className="travel-save-button" onClick={travelAddEntry}>Save</button>
       </div>
 
-      {!isAdding && (
-        <button className="new-button" onClick={() => setIsAdding(true)}>New</button>
+      {entries.length === 0 ? (
+        <p>No travel entries found.</p>
+      ) : (
+        <div className="travel-table-container">
+          <table className="travel-table">
+            <thead>
+              <tr>
+                <th>SNO</th>
+                <th>From Name</th>
+                <th>From Date</th>
+                <th>To Name</th>
+                <th>To Date</th>
+                <th>Amount</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {entries.map((entry) => (
+                <tr key={entry._id}>
+                  <td>{entry.SNO}</td>
+                  <td>{entry.FromName}</td>
+                  <td>{entry.FromDate}</td>
+                  <td>{entry.ToName}</td>
+                  <td>{entry.ToDate}</td>
+                  <td>{entry.Amount}</td>
+                  <td>
+                    <button
+                      className="travel-edit-button"
+                      onClick={() => travelHandleEdit(entry._id)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="travel-delete-button"
+                      onClick={() => travelHandleDelete(entry._id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
 }
-
-export default Travel;

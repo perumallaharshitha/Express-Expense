@@ -26,7 +26,7 @@ Content-Type: application/json
 ### Update User (PUT)
 PUT http://localhost:5000/user-api/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
 
 {
   "name": "hjui",
@@ -40,35 +40,35 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6Iiwia
 
 ### Logout (DELETE)
 DELETE http://localhost:5000/user-api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
 
 ###Categories Requests
 ### Add a Travel Entry
 ###
 POST http://localhost:5000/category-api/add/travel
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
 Content-Type: application/json
 
 {
   "SNO": 1,
-  "Destination": "Paris",
-  "Arrival": "2025-03-05",
-  "Distance": "1000km",
-  "Amount": 15000,
-  "date": "2025-03-06"
+  "Destination": "london",
+  "Arrival": "2025-04-17",
+  "Distance": "100000km",
+  "Amount": 30000,
+  "date": "2025-08-05"
 }
 
 ###
 
 ### Get All Travel Entries
 GET http://localhost:5000/category-api/get/travel
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
 
 ###
 
 ### Update a Category Entry (replace ID with actual ObjectId)
 PUT http://localhost:5000/category-api/update/661fc9a50c2f93dddb09e9cb
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
 Content-Type: application/json
 
 {
@@ -80,7 +80,7 @@ Content-Type: application/json
 
 ### Delete a Category Entry (replace ID with actual ObjectId)
 DELETE http://localhost:5000/category-api/delete/661fc9a50c2f93dddb09e9cb
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1MTM2Nzc2LCJleHAiOjE3NDUxNDAzNzZ9.yyE-8jXdpes_Pzq7cKpouqKNziqe96zEFRtVx49k6BE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
 
 ###
 

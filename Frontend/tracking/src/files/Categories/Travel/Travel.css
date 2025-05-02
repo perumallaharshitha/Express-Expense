@@ -1,13 +1,9 @@
-
-
 .travel-container {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
-}
-
-.date-picker-container {
-  display: flex;
-  align-items: center;
+  font-family: 'Arial', sans-serif;
 }
 
 .travel-header {
@@ -17,71 +13,200 @@
   margin-bottom: 20px;
 }
 
-.home-icon {
-  margin-right: 10px;
-  color: #333;
-  text-decoration: none;
+h2 {
+  font-size: 24px;
+  margin: 0;
+  font-weight: bold;
 }
 
-.date-picker-container {
+.travel-datepicker {
   display: flex;
   align-items: center;
 }
 
-.travel {
+.travel-datepicker-input {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 150px;
+  margin-left: 10px;
+}
+
+/* Input Container */
+.travel-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+/* Input Group */
+.travel-input-group {
+  width: 200px; /* Adjust width of input fields */
+  margin-bottom: 15px;
+}
+
+.travel-input-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.travel-input-field {
   width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Save Button */
+.travel-save-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 4px 16px; /* Reduced the height of the button */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.travel-save-button:hover {
+  background-color: #45a049;
+}
+
+/* Success/Error Message */
+.travel-message {
+  color: green;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.travel-message.error {
+  color: red;
+}
+
+/* Table */
+.travel-table-container {
+  overflow-x: auto;
 }
 
 .travel-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0 auto;
-  font-family: 'Arial', sans-serif;
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .travel-table th,
 .travel-table td {
-  padding: 10px 15px;
-  text-align: left;
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
 }
 
 .travel-table th {
-  background-color: #f1f1f1;
-  font-weight: bold;
+  background-color: lightgreen; /* Gray background for header */
+  color: white;
+  text-transform: uppercase;
 }
 
-.edit-icon, .delete-icon {
-  cursor: pointer;
-  margin-right: 12px;
+.travel-table tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
-.input-container {
-  margin-top: 20px;
+.travel-table tr:hover {
+  background-color: #e0e0e0;
 }
 
-.input-row {
-  display: flex;
-  justify-content: center;
+.travel-edit-button{
+  margin-right: 5px;
 }
-
-.input-row input {
-  width: 150px;
-  margin: 0 5px;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  padding: 10px;
-}
-
-.save-button, .new-button {
-  background-color: #4CAF50;
+.travel-edit-button,
+.travel-delete-button {
+  background-color: #f44336;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 6px 12px;
+  border-radius: 4px;
   cursor: pointer;
-  margin: 10px 500px;
+  
 }
 
-.new-button {
-  background-color: #008CBA;
+.travel-edit-button:hover,
+.travel-delete-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .travel-input-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .travel-input-group {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .travel-table {
+    font-size: 12px;
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+
+  .travel-table th,
+  .travel-table td {
+    padding: 10px 8px;
+  }
+
+  .travel-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .travel-home-icon {
+    margin-bottom: 10px;
+  }
+}
+
+/* Input Fields and DatePicker Styling */
+.travel-datepicker-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.travel-datepicker-input {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.travel-datepicker-wrapper .react-datepicker__input-container input {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Table Border Radius */
+.travel-table th,
+.travel-table td {
+  border-radius: 12px; /* Rounded corners for cells */
+}
+
+/* Rounded Corners for Table */
+.travel-table {
+  border-radius: 12px; /* Round the whole table */
 }

@@ -1,38 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getValidTokenOrLogout } from '../../contexts/auth';
-import DatePicker from 'react-datepicker'; // Import DatePicker
-import { Link } from 'react-router-dom'; // Import Link for navigation
-import { FaHome } from 'react-icons/fa'; // Import Home icon
-import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
+import DatePicker from 'react-datepicker';
+import { Link } from 'react-router-dom';
+import { FaHome, FaEdit, FaTrash } from 'react-icons/fa';
+import 'react-datepicker/dist/react-datepicker.css';
 import './Travel.css';
 
 export default function Travel() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  // Input form state
   const [travelFromName, setTravelFromName] = useState('');
   const [travelFromDate, setTravelFromDate] = useState(new Date());
   const [travelToName, setTravelToName] = useState('');
   const [travelToDate, setTravelToDate] = useState(new Date());
   const [travelAmount, setTravelAmount] = useState('');
-  
-  // New state for the Date Recorded field (will not be shown)
-  const [travelDateRecorded, setTravelDateRecorded] = useState(new Date());
-
-  // State for success/error messages
+  const [travelDateRecorded, setTravelDateRecorded] = useState(new Date()); // Added for consistency
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
   const [message, setMessage] = useState('');
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Added for filtering
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  const token = localStorage.getItem('token');
 
   const travelFetchEntries = async () => {
-    const token = getValidTokenOrLogout();
-    if (!token) return;
-
     try {
       const res = await axios.get("http://localhost:5000/category-api/get/travel", {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setEntries(res.data.data);
+      const filtered = res.data.data.filter(
+        (item) =>
+          new Date(item.DateRecorded).toDateString() ===
+          selectedDate.toDateString()
+      );
+      setEntries(filtered);
+      setTotalAmount(filtered.reduce((sum, item) => sum + item.Amount, 0));
     } catch (err) {
       setMessage("Failed to fetch travel data.");
       console.error("Fetch error:", err);
@@ -42,35 +45,31 @@ export default function Travel() {
   };
 
   const travelAddEntry = async () => {
-    const token = getValidTokenOrLogout();
-    if (!token) return;
-
     if (!travelFromName || !travelFromDate || !travelToName || !travelToDate || !travelAmount) {
       setMessage("Please fill in all fields.");
       return;
     }
 
     try {
-      await axios.post("http://localhost:5000/category-api/add/travel", {
-        SNO: entries.length + 1,
+      const newEntry = {
         FromName: travelFromName,
-        FromDate: new Date(travelFromDate), // Store as Date object
+        FromDate: travelFromDate,
         ToName: travelToName,
-        ToDate: new Date(travelToDate), // Store as Date object
+        ToDate: travelToDate,
         Amount: parseFloat(travelAmount),
-        DateRecorded: travelDateRecorded // Store Date Recorded in DB
-      }, {
+        DateRecorded: travelDateRecorded,
+      };
+      const res = await axios.post("http://localhost:5000/category-api/add/travel", newEntry, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
+      const newEntryWithId = res.data.data; // Assuming your backend returns the newly created entry with an ID
+      if (new Date(newEntryWithId.DateRecorded).toDateString() === selectedDate.toDateString()) {
+        setEntries([...entries, newEntryWithId]);
+        setTotalAmount(prev => prev + parseFloat(travelAmount));
+      }
       setMessage("Entry added successfully!");
-      travelFetchEntries();
-      // Clear inputs after adding
-      setTravelFromName('');
-      setTravelFromDate(new Date());
-      setTravelToName('');
-      setTravelToDate(new Date());
-      setTravelAmount('');
+      travelResetFields();
     } catch (err) {
       setMessage("Failed to add entry.");
       console.error("Add error:", err);
@@ -78,45 +77,78 @@ export default function Travel() {
   };
 
   const travelHandleDelete = async (id) => {
-    const token = getValidTokenOrLogout();
-    if (!token) return;
-
     try {
       await axios.delete(`http://localhost:5000/category-api/delete/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      const updatedEntries = entries.filter((entry) => entry._id !== id);
+      setEntries(updatedEntries);
+      setTotalAmount(updatedEntries.reduce((sum, item) => sum + item.Amount, 0));
       setMessage("Entry deleted successfully!");
-      travelFetchEntries();
     } catch (err) {
       setMessage("Failed to delete entry.");
       console.error("Delete error:", err);
     }
   };
 
-  const travelHandleEdit = async (id) => {
-    const entry = entries.find((entry) => entry._id === id);
-    setTravelFromName(entry.FromName);
-    setTravelFromDate(new Date(entry.FromDate));
-    setTravelToName(entry.ToName);
-    setTravelToDate(new Date(entry.ToDate));
-    setTravelAmount(entry.Amount);
+  const travelHandleEdit = (id) => {
+    const entryToEdit = entries.find((entry) => entry._id === id);
+    if(entryToEdit){
+        setTravelFromName(entryToEdit.FromName);
+        setTravelFromDate(new Date(entryToDate.FromDate));
+        setTravelToName(entryToEdit.ToName);
+        setTravelToDate(new Date(entryToEdit.ToDate));
+        setTravelAmount(entryToEdit.Amount);
+        setTravelDateRecorded(new Date(entryToEdit.DateRecorded));
+        setIsEditing(true);
+        setEditId(id);
+    }
 
-    // Modify the add function to be an update function
-    await axios.put(`http://localhost:5000/category-api/update/${id}`, {
-      FromName: travelFromName,
-      FromDate: travelFromDate,
-      ToName: travelToName,
-      ToDate: travelToDate,
-      Amount: travelAmount
-    });
+  };
 
-    setMessage("Entry updated successfully!");
-    travelFetchEntries();
+  const travelSaveEditedItem = async () => {
+    try {
+      const updatedItem = {
+        FromName: travelFromName,
+        FromDate: travelFromDate,
+        ToName: travelToName,
+        ToDate: travelToDate,
+        Amount: parseFloat(travelAmount),
+        DateRecorded: travelDateRecorded
+      };
+
+      await axios.put(`http://localhost:5000/category-api/update/${editId}`, updatedItem, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const updatedEntries = entries.map(item =>
+        item._id === editId ? { ...item, ...updatedItem } : item
+      );
+      setEntries(updatedEntries);
+      setTotalAmount(updatedEntries.reduce((sum, item) => sum + item.Amount, 0));
+      setMessage("Entry updated successfully!");
+      travelResetFields();
+      setIsEditing(false);
+      setEditId(null);
+
+    } catch (error) {
+      setMessage("Failed to update entry.");
+      console.error("Error updating entry:", error);
+    }
+  };
+
+  const travelResetFields = () => {
+    setTravelFromName('');
+    setTravelFromDate(new Date());
+    setTravelToName('');
+    setTravelToDate(new Date());
+    setTravelAmount('');
+    setTravelDateRecorded(new Date());
   };
 
   useEffect(() => {
     travelFetchEntries();
-  }, []);
+  }, [selectedDate]);
 
   if (loading) return <div className="travel-loading">Loading...</div>;
 
@@ -124,14 +156,14 @@ export default function Travel() {
     <div className="travel-container">
       <div className="travel-header">
         <Link to="/category" className="travel-home-icon">
-          <FaHome size={24} color="#000000" /> 
+          <FaHome size={24} color="#000000" />
         </Link>
         <h2>Travel Entries</h2>
         <div className="travel-datepicker">
           <DatePicker
-            selected={travelDateRecorded}
-            onChange={(date) => setTravelDateRecorded(date)}
-            dateFormat="MMMM d, yyyy"
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            dateFormat="MMMM d,yyyy"
             className="travel-datepicker-input"
           />
         </div>
@@ -140,65 +172,64 @@ export default function Travel() {
       {message && <div className="travel-message">{message}</div>}
 
       <div className="travel-input-container">
-        <div className="travel-input-group">
-          <label>From Name</label>
-          <input
-            type="text"
-            placeholder="From Name"
-            value={travelFromName}
-            onChange={(e) => setTravelFromName(e.target.value)}
-            className="travel-input-field"
-          />
-        </div>
+        <div className="travel-input-row">
+          <div className="travel-input-group">
+            <label>From Name</label>
+            <input
+              type="text"
+              placeholder="From Name"
+              value={travelFromName}
+              onChange={(e) => setTravelFromName(e.target.value)}
+              className="travel-input-field"
+            />
+          </div>
 
-        <div className="travel-input-group">
-          <label>From Date</label>
-          <DatePicker
-            selected={travelFromDate}
-            onChange={(date) => setTravelFromDate(date)}
-            dateFormat="MMMM d, yyyy"
-            className="travel-datepicker-input"
-          />
-        </div>
+          <div className="travel-input-group">
+            <label>From Date</label>
+            <DatePicker
+              selected={travelFromDate}
+              onChange={(date) => setTravelFromDate(date)}
+              dateFormat="MMMM d,yyyy"
+              className="travel-datepicker-input"
+            />
+          </div>
 
-        <div className="travel-input-group">
-          <label>To Name</label>
-          <input
-            type="text"
-            placeholder="To Name"
-            value={travelToName}
-            onChange={(e) => setTravelToName(e.target.value)}
-            className="travel-input-field"
-          />
-        </div>
+          <div className="travel-input-group">
+            <label>To Name</label>
+            <input
+              type="text"
+              placeholder="To Name"
+              value={travelToName}
+              onChange={(e) => setTravelToName(e.target.value)}
+              className="travel-input-field"
+            />
+          </div>
 
-        <div className="travel-input-group">
-          <label>To Date</label>
-          <DatePicker
-            selected={travelToDate}
-            onChange={(date) => setTravelToDate(date)}
-            dateFormat="MMMM d, yyyy"
-            className="travel-datepicker-input"
-          />
-        </div>
+          <div className="travel-input-group">
+            <label>To Date</label>
+            <DatePicker
+              selected={travelToDate}
+              onChange={(date) => setTravelToDate(date)}
+              dateFormat="MMMM d,yyyy"
+              className="travel-datepicker-input"
+            />
+          </div>
 
-        <div className="travel-input-group">
-          <label>Amount</label>
-          <input
-            type="number"
-            placeholder="Amount"
-            value={travelAmount}
-            onChange={(e) => setTravelAmount(e.target.value)}
-            className="travel-input-field"
-          />
-        </div>
-        <input
-          type="hidden"
-          value={travelDateRecorded}
-          onChange={(e) => setTravelDateRecorded(new Date(e.target.value))}
-        />
+          <div className="travel-input-group">
+            <label>Amount</label>
+            <input
+              type="number"
+              placeholder="Amount"
+              value={travelAmount}
+              onChange={(e) => setTravelAmount(e.target.value)}
+              className="travel-input-field"
+            />
+          </div>
 
-        <button className="travel-save-button" onClick={travelAddEntry}>Save</button>
+          <button className="travel-save-button" onClick={isEditing ? travelSaveEditedItem : travelAddEntry}>
+            {isEditing ? 'Save' : 'Add'}
+          </button>
+        </div>
       </div>
 
       {entries.length === 0 ? (
@@ -218,30 +249,34 @@ export default function Travel() {
               </tr>
             </thead>
             <tbody>
-              {entries.map((entry) => (
+              {entries.map((entry, index) => (
                 <tr key={entry._id}>
-                  <td>{entry.SNO}</td>
+                  <td>{index+1}</td>
                   <td>{entry.FromName}</td>
-                  <td>{entry.FromDate}</td>
+                  <td>{new Date(entry.FromDate).toLocaleDateString()}</td>
                   <td>{entry.ToName}</td>
-                  <td>{entry.ToDate}</td>
+                  <td>{new Date(entry.ToDate).toLocaleDateString()}</td>
                   <td>{entry.Amount}</td>
                   <td>
-                    <button
-                      className="travel-edit-button"
+                    <FaEdit
+                      className="travel-edit-icon"
                       onClick={() => travelHandleEdit(entry._id)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="travel-delete-button"
+                    />
+                    <FaTrash
+                      className="travel-delete-icon"
                       onClick={() => travelHandleDelete(entry._id)}
-                    >
-                      Delete
-                    </button>
+                    />
                   </td>
                 </tr>
               ))}
+              {entries.length > 0 && (
+                <tr>
+                  <td colSpan="5">Grand Total</td>
+                  <td>{totalAmount}</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -249,3 +284,4 @@ export default function Travel() {
     </div>
   );
 }
+

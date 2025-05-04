@@ -26,7 +26,7 @@ Content-Type: application/json
 ### Update User (PUT)
 PUT http://localhost:5000/user-api/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
 
 {
   "name": "hjui",
@@ -40,48 +40,207 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6Iiwia
 
 ### Logout (DELETE)
 DELETE http://localhost:5000/user-api/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
 
-###Categories Requests
-### Add a Travel Entry
 ###
-POST http://localhost:5000/category-api/add/travel
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
+### --- CATEGORY REQUESTS --- ###
+
+### Food Category ###
+
+### Add a Food Entry
+POST http://localhost:5000/category-api/add/food
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
 Content-Type: application/json
 
 {
-  "SNO": 1,
-  "Destination": "london",
-  "Arrival": "2025-04-17",
-  "Distance": "100000km",
-  "Amount": 30000,
-  "date": "2025-08-05"
+  "item": "Chicken Curry",
+  "purpose": "Dinner",
+  "quantity": 1,
+  "amount": 350,
+  "createdAt": "2025-05-02T19:00:00.000Z"
 }
 
-###
+### Get All Food Entries
+GET http://localhost:5000/category-api/get/food
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+
+### Update a Food Entry (replace ID with actual ObjectId)
+PUT http://localhost:5000/category-api/update/66339c7a1234567890abcdef
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+Content-Type: application/json
+
+{
+  "amount": 400,
+  "purpose": "Late Dinner"
+}
+
+### Delete a Food Entry (replace ID with actual ObjectId)
+DELETE http://localhost:5000/category-api/delete/66339c7a1234567890abcdef
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+
+### Clothing Category ###
+
+### Add a Clothing Entry
+POST http://localhost:5000/category-api/add/clothing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+Content-Type: application/json
+
+{
+  "name": "Jeans",
+  "quantity": 1,
+  "amount": 1200,
+  "paymentDate": "2025-05-03T14:30:00.000Z"
+}
+
+### Get All Clothing Entries
+GET http://localhost:5000/category-api/get/clothing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+
+### Update a Clothing Entry (replace ID with actual ObjectId)
+PUT http://localhost:5000/category-api/update/66339d11fedcba9876543210
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+Content-Type: application/json
+
+{
+  "amount": 1100,
+  "name": "Slim Fit Jeans"
+}
+
+### Delete a Clothing Entry (replace ID with actual ObjectId)
+DELETE http://localhost:5000/category-api/delete/66339d11fedcba9876543210
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+
+### Jewellery Category ###
+
+### Add a Jewellery Entry
+POST http://localhost:5000/category-api/add/jewellery
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+Content-Type: application/json
+
+{
+  "name": "Gold Earrings",
+  "type": "Earrings",
+  "weight": "10g",
+  "amount": 50000
+}
+
+### Get All Jewellery Entries
+GET http://localhost:5000/category-api/get/jewellery
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+
+### Update a Jewellery Entry (replace ID with actual ObjectId)
+PUT http://localhost:5000/category-api/update/66339d889876543210abcdef
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+Content-Type: application/json
+
+{
+  "amount": 52000,
+  "weight": "11g"
+}
+
+### Delete a Jewellery Entry (replace ID with actual ObjectId)
+DELETE http://localhost:5000/category-api/delete/66339d889876543210abcdef
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+
+### Medicine Category ###
+
+### Add a Medicine Entry
+POST http://localhost:5000/category-api/add/medicine
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+Content-Type: application/json
+
+{
+  "name": "Paracetamol",
+  "illness": "Fever",
+  "quantity": 10,
+  "amount": 25,
+  "recordDate": "2025-05-01T08:00:00.000Z"
+}
+
+### Get All Medicine Entries
+GET http://localhost:5000/category-api/get/medicine
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+
+### Update a Medicine Entry (replace ID with actual ObjectId)
+PUT http://localhost:5000/category-api/update/66339e00abcdef1234567890
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+Content-Type: application/json
+
+{
+  "quantity": 15,
+  "amount": 35
+}
+
+### Delete a Medicine Entry (replace ID with actual ObjectId)
+DELETE http://localhost:5000/category-api/delete/66339e00abcdef1234567890
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+
+### Subscription Category ###
+
+### Add a Subscription Entry
+POST http://localhost:5000/category-api/add/subscription
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+Content-Type: application/json
+
+{
+  "name": "Netflix",
+  "ID": "NET123",
+  "startDate": "2025-04-15T00:00:00.000Z",
+  "endDate": "2025-05-15T00:00:00.000Z",
+  "modeOfPayment": "Credit Card",
+  "amount": 800,
+  "dateOfPayment": "2025-04-15T10:00:00.000Z",
+  "nextRenewal": "2025-05-15T00:00:00.000Z"
+}
+
+### Get All Subscription Entries
+GET http://localhost:5000/category-api/get/subscription
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+
+### Update a Subscription Entry (replace ID with actual ObjectId)
+PUT http://localhost:5000/category-api/update/66339e78fedcba9876543210
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+Content-Type: application/json
+
+{
+  "amount": 900,
+  "endDate": "2025-06-15T00:00:00.000Z"
+}
+
+### Delete a Subscription Entry (replace ID with actual ObjectId)
+DELETE http://localhost:5000/category-api/delete/66339e78fedcba9876543210
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+
+### Travel Category ###
+
+### Add a Travel Entry
+POST http://localhost:5000/category-api/add/travel
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
+Content-Type: application/json
+
+{
+  "fromName": "Mumbai",
+  "fromDate": "2025-05-10T06:00:00.000Z",
+  "toName": "Goa",
+  "toDate": "2025-05-12T20:00:00.000Z",
+  "amount": 4500
+}
 
 ### Get All Travel Entries
 GET http://localhost:5000/category-api/get/travel
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
 
-###
-
-### Update a Category Entry (replace ID with actual ObjectId)
+### Update a Travel Entry (replace ID with actual ObjectId)
 PUT http://localhost:5000/category-api/update/661fc9a50c2f93dddb09e9cb
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
 Content-Type: application/json
 
 {
-  "Destination": "London",
-  "Amount": 18000
+  "amount": 5000,
+  "toName": "Kerala"
 }
 
-###
-
-### Delete a Category Entry (replace ID with actual ObjectId)
+### Delete a Travel Entry (replace ID with actual ObjectId)
 DELETE http://localhost:5000/category-api/delete/661fc9a50c2f93dddb09e9cb
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ1NjQ0MDYxLCJleHAiOjE3NDU2NDc2NjF9.KdgO59GcZCOPNjvKfflpbmviAF-3QkKz9aCOAIMcw3A
-
-###
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieHl6IiwiaWF0IjoxNzQ2MTU3MzUxLCJleHAiOjE3NDYxNjA5NTF9.4M7sPlyOZQVZk7cP6i-3Ld0i3b-V38CXfB7_VD6aXZ0
 

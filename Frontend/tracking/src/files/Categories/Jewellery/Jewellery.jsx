@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHome, FaEdit, FaTrash } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
+import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Jewellery.css';
 
@@ -128,13 +129,16 @@ function Jewellery() {
 
   const jewelleryEditItem = (id) => {
     const itemToEdit = jewelleryItems.find((item) => item._id === id);
-    setJewelleryName(itemToEdit.name);
-    setJewelleryType(itemToEdit.type);
-    setJewelleryWeight(itemToEdit.weight);
-    setJewelleryAmount(itemToEdit.amount);
-    setJewelleryPaymentDate(new Date(itemToEdit.paymentDate)); // Set payment date for editing
-    setJewelleryIsEditing(true);
-    setJewelleryEditId(id);
+    if(itemToEdit){
+        setJewelleryName(itemToEdit.name);
+        setJewelleryType(itemToEdit.type);
+        setJewelleryWeight(itemToEdit.weight);
+        setJewelleryAmount(itemToEdit.amount);
+        setJewelleryPaymentDate(new Date(itemToEdit.paymentDate)); // Set payment date for editing
+        setJewelleryIsEditing(true);
+        setJewelleryEditId(id);
+    }
+
   };
 
   const jewelleryResetFields = () => {
@@ -156,7 +160,7 @@ function Jewellery() {
           <DatePicker
             selected={jewellerySelectedDate}
             onChange={(date) => setJewellerySelectedDate(date)}
-            dateFormat="MMMM d, yyyy" // Corrected dateFormat
+            dateFormat="MMMM d, yyyy"
             className="jewellery-datepicker-input"
           />
         </div>
@@ -207,10 +211,10 @@ function Jewellery() {
             />
           </div>
           <button className="jewellery-save-button" onClick={jewelleryIsEditing ? jewellerySaveEditedItem : jewelleryAddItem}>
-          {jewelleryIsEditing ? 'Save' : 'Add'}
-        </button>
+            {jewelleryIsEditing ? 'Save' : 'Add'}
+          </button>
         </div>
-        
+
       </div>
 
       <div className="jewellery-table-container">

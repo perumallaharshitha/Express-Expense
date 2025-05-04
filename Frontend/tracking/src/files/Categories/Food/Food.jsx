@@ -56,6 +56,7 @@ function Food() {
       purpose: foodPurpose,
       quantity: parseInt(foodQuantity),
       amount: parseFloat(foodAmount),
+      createdAt: new Date(), // Include createdAt for filtering
     };
 
     try {
@@ -76,10 +77,11 @@ function Food() {
         setFoodItems([...foodItems, newEntry]);
         setFoodTotalAmount((prev) => prev + parseFloat(foodAmount));
       }
-
       foodResetFields();
+
     } catch (error) {
       console.error('Error adding food item:', error);
+      // Consider showing a user-friendly error message here
     }
   };
 
@@ -120,6 +122,7 @@ function Food() {
       setFoodEditId(null);
     } catch (error) {
       console.error('Error saving edited food item:', error);
+      // Consider showing a user-friendly error message here
     }
   };
 
@@ -139,17 +142,21 @@ function Food() {
       setFoodTotalAmount(filtered.reduce((sum, item) => sum + item.amount, 0));
     } catch (error) {
       console.error('Error deleting food item:', error);
+      // Consider showing a user-friendly error message here
     }
   };
 
   const foodEditItem = (id) => {
     const itemToEdit = foodItems.find((item) => item._id === id);
-    setFoodItem(itemToEdit.item);
-    setFoodPurpose(itemToEdit.purpose);
-    setFoodQuantity(itemToEdit.quantity);
-    setFoodAmount(itemToEdit.amount);
-    setFoodIsEditing(true);
-    setFoodEditId(id);
+    if(itemToEdit){
+      setFoodItem(itemToEdit.item);
+      setFoodPurpose(itemToEdit.purpose);
+      setFoodQuantity(itemToEdit.quantity);
+      setFoodAmount(itemToEdit.amount);
+      setFoodIsEditing(true);
+      setFoodEditId(id);
+    }
+
   };
 
   const foodResetFields = () => {
@@ -170,7 +177,7 @@ function Food() {
           <DatePicker
             selected={foodSelectedDate}
             onChange={(date) => setFoodSelectedDate(date)}
-            dateFormat="MMMM d, yyyy"
+            dateFormat="MMMM d, yyyy" // Corrected dateFormat
             className="food-datepicker-input"
           />
         </div>
@@ -220,7 +227,7 @@ function Food() {
           </button>
         </div>
 
-        
+
       </div>
 
       {/* Food Table */}

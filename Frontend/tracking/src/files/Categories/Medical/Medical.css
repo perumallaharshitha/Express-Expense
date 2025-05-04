@@ -1,8 +1,8 @@
-/* This CSS will be identical to Jewellery.css to achieve the same UI */
-/* You can simply copy the content of Jewellery.css into Medical.css */
+/* This CSS will be identical to medical.css to achieve the same UI */
+/* You can simply copy the content of medical.css into Medical.css */
 
 /* Container & Header */
-.jewellery-container {
+.medical-container {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -10,7 +10,7 @@
   font-family: 'Arial', sans-serif;
 }
 
-.jewellery-header {
+.medical-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -18,19 +18,19 @@
   margin-bottom: 20px;
 }
 
-.jewellery-header h2 {
+.medical-header h2 {
   font-size: 24px;
   margin: 0;
   font-weight: bold;
 }
 
-.jewellery-datepicker {
+.medical-datepicker {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.jewellery-datepicker-input {
+.medical-datepicker-input {
   padding: 10px;
   font-size: 14px;
   border-radius: 6px;
@@ -40,29 +40,29 @@
 }
 
 /* Input Layout */
-.jewellery-input-container {
+.medical-input-container {
   margin-bottom: 20px;
 }
 
-.jewellery-input-row {
+.medical-input-row {
   display: flex;
   gap: 10px;
   margin-bottom: 10px; /* Space between input row and button */
 }
 
-.jewellery-input-group {
+.medical-input-group {
   flex: 1; /* Distribute space equally among input groups */
   display: flex;
   flex-direction: column;
 }
 
-.jewellery-input-group label {
+.medical-input-group label {
   font-size: 14px;
   margin-bottom: 5px;
   font-weight: 500;
 }
 
-.jewellery-input-field {
+.medical-input-field {
   padding: 10px;
   font-size: 14px;
   border-radius: 6px;
@@ -71,7 +71,7 @@
   box-sizing: border-box;
 }
 
-.jewellery-input-group select.jewellery-input-field {
+.medical-input-group select.medical-input-field {
   appearance: none; /* Remove default arrow */
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23343a40" viewBox="0 0 4 5"><path d="M2 0L0 2h4L2 0z"/></svg>');
   background-repeat: no-repeat;
@@ -81,7 +81,7 @@
 }
 
 /* Save Button */
-.jewellery-save-button {
+.medical-save-button {
   background-color: #daa520; /* Goldenrod */
   color: white;
   padding: 10px 20px;
@@ -91,16 +91,16 @@
   font-size: 14px;
 }
 
-.jewellery-save-button:hover {
+.medical-save-button:hover {
   background-color: #b8860b; /* Dark Goldenrod */
 }
 
 /* Table Styling */
-.jewellery-table-container {
+.medical-table-container {
   overflow-x: auto;
 }
 
-.jewellery-table {
+.medical-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
@@ -109,67 +109,67 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.jewellery-table th,
-.jewellery-table td {
+.medical-table th,
+.medical-table td {
   padding: 12px;
   text-align: center;
   font-size: 14px;
 }
 
-.jewellery-table th {
+.medical-table th {
   background-color: #8fbc8f; /* DarkSeaGreen */
   color: white;
   text-transform: uppercase;
 }
 
-.jewellery-table tr:nth-child(even) {
+.medical-table tr:nth-child(even) {
   background-color: #f0fff0; /* Honeydew */
 }
 
-.jewellery-table tr:hover {
+.medical-table tr:hover {
   background-color: #e0eee0; /* LightCyan */
 }
 
 /* Buttons */
-.jewellery-edit-icon,
-.jewellery-delete-icon {
+.medical-edit-icon,
+.medical-delete-icon {
   cursor: pointer;
   margin: 0 5px;
   font-size: 16px;
 }
 
-.jewellery-edit-icon {
+.medical-edit-icon {
   color: #008000; /* Green */
 }
 
-.jewellery-delete-icon {
+.medical-delete-icon {
   color: #ff0000; /* Red */
 }
 
 /* Responsive */
 @media screen and (max-width: 768px) {
-  .jewellery-header {
+  .medical-header {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
 
-  .jewellery-input-row {
+  .medical-input-row {
     flex-direction: column;
   }
 
-  .jewellery-input-group {
+  .medical-input-group {
     width: 100%;
     min-width: auto;
   }
 
-  .jewellery-table th,
-  .jewellery-table td {
+  .medical-table th,
+  .medical-table td {
     font-size: 12px;
     padding: 10px;
   }
 
-  .jewellery-datepicker {
+  .medical-datepicker {
     margin-top: 10px;
   }
 }

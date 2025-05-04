@@ -22,7 +22,7 @@ function Clothing() {
   useEffect(() => {
     const fetchClothings = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/category-api/get/clothings', {
+        const response = await axios.get('http://localhost:5000/category-api/get/clothing', { // Corrected endpoint
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -54,7 +54,7 @@ function Clothing() {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/category-api/add/clothings',
+        'http://localhost:5000/category-api/add/clothing', // Corrected endpoint
         newItem,
         {
           headers: {
@@ -126,12 +126,15 @@ function Clothing() {
 
   const clothEditItem = (id) => {
     const itemToEdit = clothItems.find((item) => item._id === id);
-    setClothName(itemToEdit.name);
-    setClothQuantity(itemToEdit.quantity);
-    setClothAmount(itemToEdit.amount);
-    setClothPaymentDate(new Date(itemToEdit.paymentDate)); // Set payment date for editing
-    setClothIsEditing(true);
-    setClothEditId(id);
+    if(itemToEdit){
+      setClothName(itemToEdit.name);
+      setClothQuantity(itemToEdit.quantity);
+      setClothAmount(itemToEdit.amount);
+      setClothPaymentDate(new Date(itemToEdit.paymentDate)); // Set payment date for editing
+      setClothIsEditing(true);
+      setClothEditId(id);
+    }
+
   };
 
   const clothResetFields = () => {
@@ -152,7 +155,7 @@ function Clothing() {
           <DatePicker
             selected={clothSelectedDate}
             onChange={(date) => setClothSelectedDate(date)}
-            dateFormat="MMMM d, yyyy"
+            dateFormat="MMMM d,pppp"
             className="cloth-datepicker-input"
           />
         </div>

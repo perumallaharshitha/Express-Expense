@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHome, FaEdit, FaTrash } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
+import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
-import './Medical.css'; // Make sure to import the Medical CSS
+import './Medical.css';
 
 function Medical() {
   const [medicalItems, setMedicalItems] = useState([]);
@@ -11,36 +12,33 @@ function Medical() {
   const [medicalIllness, setMedicalIllness] = useState('');
   const [medicalQuantity, setMedicalQuantity] = useState('');
   const [medicalAmount, setMedicalAmount] = useState('');
-  const [medicalRecordDate, setMedicalRecordDate] = useState(new Date()); // Added record date
+  const [medicalRecordDate, setMedicalRecordDate] = useState(new Date());
   const [medicalIsEditing, setMedicalIsEditing] = useState(false);
   const [medicalEditId, setMedicalEditId] = useState(null);
   const [medicalTotalAmount, setMedicalTotalAmount] = useState(0);
-  const [medicalSelectedDate, setMedicalSelectedDate] = useState(new Date()); // For filtering
+  const [medicalSelectedDate, setMedicalSelectedDate] = useState(new Date());
 
-  const token = localStorage.getItem('token'); // Assumes token is stored in localStorage
+  const token = localStorage.getItem('token');
 
-  useEffect(() => {
-    const fetchMedicalItems = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/category-api/get/medical', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const filtered = response.data.data.filter(
-          (item) =>
-            new Date(item.recordDate).toDateString() ===
-            medicalSelectedDate.toDateString()
-        );
-        setMedicalItems(filtered);
-        const total = filtered.reduce((sum, item) => sum + item.amount, 0);
-        setMedicalTotalAmount(total);
-      } catch (error) {
-        console.error('Error fetching medical items:', error);
-      }
-    };
-    fetchMedicalItems();
-  }, [token, medicalSelectedDate]);
+  const fetchMedicalItems = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/category-api/get/medical', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const filtered = response.data.data.filter(
+        (item) =>
+          new Date(item.recordDate).toDateString() ===
+          medicalSelectedDate.toDateString()
+      );
+      setMedicalItems(filtered);
+      const total = filtered.reduce((sum, item) => sum + item.amount, 0);
+      setMedicalTotalAmount(total);
+    } catch (error) {
+      console.error('Error fetching medical items:', error);
+    }
+  };
 
   const medicalAddItem = async () => {
     if (!medicalName || !medicalIllness || !medicalQuantity || !medicalAmount || !medicalRecordDate) return;
@@ -50,7 +48,7 @@ function Medical() {
       illness: medicalIllness,
       quantity: parseInt(medicalQuantity),
       amount: parseFloat(medicalAmount),
-      recordDate: medicalRecordDate, // Include record date
+      recordDate: medicalRecordDate,
     };
 
     try {
@@ -82,7 +80,7 @@ function Medical() {
       illness: medicalIllness,
       quantity: parseInt(medicalQuantity),
       amount: parseFloat(medicalAmount),
-      recordDate: medicalRecordDate, // Include record date
+      recordDate: medicalRecordDate,
     };
 
     try {
@@ -128,13 +126,16 @@ function Medical() {
 
   const medicalEditItem = (id) => {
     const itemToEdit = medicalItems.find((item) => item._id === id);
-    setMedicalName(itemToEdit.name);
-    setMedicalIllness(itemToEdit.illness);
-    setMedicalQuantity(itemToEdit.quantity);
-    setMedicalAmount(itemToEdit.amount);
-    setMedicalRecordDate(new Date(itemToEdit.recordDate)); // Set record date for editing
-    setMedicalIsEditing(true);
-    setMedicalEditId(id);
+    if (itemToEdit) {
+      setMedicalName(itemToEdit.name);
+      setMedicalIllness(itemToEdit.illness);
+      setMedicalQuantity(itemToEdit.quantity);
+      setMedicalAmount(itemToEdit.amount);
+      setMedicalRecordDate(new Date(itemToEdit.recordDate));
+      setMedicalIsEditing(true);
+      setMedicalEditId(id);
+    }
+
   };
 
   const medicalResetFields = () => {
@@ -142,81 +143,76 @@ function Medical() {
     setMedicalIllness('');
     setMedicalQuantity('');
     setMedicalAmount('');
-    setMedicalRecordDate(new Date()); // Reset record date
+    setMedicalRecordDate(new Date());
   };
 
+  useEffect(() => {
+    fetchMedicalItems();
+  }, [medicalSelectedDate]);
+
   return (
-    <div className="jewellery-container"> 
-      <div className="jewellery-header"> {/* Using jewellery-header for consistent header */}
-        <Link to="/category" className="jewellery-home-icon"> {/* Using jewellery-home-icon */}
+    <div className="medical-container">
+      <div className="medical-header">
+        <Link to="/category" className="medical-home-icon">
           <FaHome size={24} color="#000000" />
         </Link>
         <h2>Medical Records</h2>
-        <div className="jewellery-datepicker"> {/* Using jewellery-datepicker */}
+        <div className="medical-datepicker">
           <DatePicker
             selected={medicalSelectedDate}
             onChange={(date) => setMedicalSelectedDate(date)}
             dateFormat="MMMM d,yyyy"
-            className="jewellery-datepicker-input" 
+            className="medical-datepicker-input"
           />
         </div>
       </div>
 
-      <div className="jewellery-input-container">
-        <div className="jewellery-input-row"> {/* Using jewellery-input-row */}
-          <div className="jewellery-input-group"> {/* Using jewellery-input-group */}
+      <div className="medical-input-container">
+        <div className="medical-input-row">
+          <div className="medical-input-group">
             <label>Name</label>
             <input
               type="text"
               value={medicalName}
               onChange={(e) => setMedicalName(e.target.value)}
-              className="jewellery-input-field" 
+              className="medical-input-field"
             />
           </div>
-          <div className="jewellery-input-group"> {/* Using jewellery-input-group */}
+          <div className="medical-input-group">
             <label>Illness</label>
             <input
               type="text"
               value={medicalIllness}
               onChange={(e) => setMedicalIllness(e.target.value)}
-              className="jewellery-input-field" 
+              className="medical-input-field"
             />
           </div>
-          <div className="jewellery-input-group"> {/* Using jewellery-input-group */}
+          <div className="medical-input-group">
             <label>Quantity</label>
             <input
               type="number"
               value={medicalQuantity}
               onChange={(e) => setMedicalQuantity(e.target.value)}
-              className="jewellery-input-field"
+              className="medical-input-field"
             />
           </div>
-          <div className="jewellery-input-group"> 
+          <div className="medical-input-group">
             <label>Amount</label>
             <input
               type="number"
               value={medicalAmount}
               onChange={(e) => setMedicalAmount(e.target.value)}
-              className="jewellery-input-field"
+              className="medical-input-field"
             />
           </div>
-          <div className="jewellery-input-group"> 
-            <label>Record Date</label>
-            <DatePicker
-              selected={medicalRecordDate}
-              onChange={(date) => setMedicalRecordDate(date)}
-              dateFormat="MMMM d,yyyy"
-              className="jewellery-datepicker-input" 
-            />
-          </div>
+          <button className="medical-save-button" onClick={medicalIsEditing ? medicalSaveEditedItem : medicalAddItem}>
+            {medicalIsEditing ? 'Save' : 'Add'}
+          </button>
         </div>
-        <button className="jewellery-save-button" onClick={medicalIsEditing ? medicalSaveEditedItem : medicalAddItem}> {/* Using jewellery-save-button */}
-          {medicalIsEditing ? 'Save' : 'Add'}
-        </button>
       </div>
 
-      <div className="jewellery-table-container"> {/* Using jewellery-table-container */}
-        <table className="jewellery-table"> {/* Using jewellery-table */}
+      <div className="medical-table-container">
+        <table className="medical-table">
           <thead>
             <tr>
               <th>SNO</th>
@@ -224,7 +220,6 @@ function Medical() {
               <th>Illness</th>
               <th>Quantity</th>
               <th>Amount</th>
-              <th>Record Date</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -236,14 +231,13 @@ function Medical() {
                 <td>{item.illness}</td>
                 <td>{item.quantity}</td>
                 <td>{item.amount}</td>
-                <td>{new Date(item.recordDate).toLocaleDateString()}</td>
                 <td>
                   <FaEdit
-                    className="jewellery-edit-icon" 
+                    className="medical-edit-icon"
                     onClick={() => medicalEditItem(item._id)}
                   />
                   <FaTrash
-                    className="jewellery-delete-icon" 
+                    className="medical-delete-icon"
                     onClick={() => medicalDeleteItem(item._id)}
                   />
                 </td>
@@ -254,7 +248,7 @@ function Medical() {
                 <td colSpan="4">Grand Total</td>
                 <td>{medicalTotalAmount}</td>
                 <td></td>
-                <td></td> {/* Empty cell for actions column */}
+                <td></td>
               </tr>
             )}
           </tbody>
@@ -265,3 +259,4 @@ function Medical() {
 }
 
 export default Medical;
+
